@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { GeneratedExamPaper } from "@/lib/rpg/rpg-engine";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
 const FALLBACK_EXAM: GeneratedExamPaper = {
   title: "TÜREV, İNTEGRAL VE ANALİTİK GEOMETRİ DENEME SINAVI",
   subject: "Matematik (AYT / Üniversiteye Hazırlık)",
