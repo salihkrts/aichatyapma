@@ -385,6 +385,39 @@ export function ChatMessageItem({
                 {cleanContent || message.content}
               </ReactMarkdown>
 
+              {/* RPG Branching & Action Choices */}
+              {activeChoices.length > 0 && !isUser && (
+                <div className="mt-3.5 pt-3 border-t border-white/10 space-y-2 not-prose">
+                  <div className="flex items-center gap-1.5 text-[11px] text-amber-300 font-semibold">
+                    <Sparkles className="size-3.5 text-amber-400 animate-pulse" />
+                    <span>Hızlı Karar & Eylem Seçenekleri:</span>
+                  </div>
+                  <div className="grid grid-cols-1 gap-1.5">
+                    {activeChoices.map((choice, idx) => {
+                      const cleanChoice = choice
+                        .replace(/^\d+[\.\)]\s*/, "")
+                        .replace(/^[-*•]\s*/, "")
+                        .replace(/^["'«“]/, "")
+                        .replace(/["'»”]$/, "")
+                        .trim();
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => onSelectChoice?.(cleanChoice)}
+                          className="group/btn flex items-center gap-2 p-2.5 rounded-xl text-left text-xs bg-purple-950/40 hover:bg-purple-900/60 border border-purple-500/30 hover:border-purple-400 text-purple-100 transition shadow-sm hover:shadow-purple-500/20 active:scale-[0.99] cursor-pointer"
+                        >
+                          <span className="size-5 rounded-lg bg-purple-500/25 border border-purple-400/40 text-purple-300 font-bold text-[10px] flex items-center justify-center shrink-0 group-hover/btn:bg-purple-500 group-hover/btn:text-white transition">
+                            {idx + 1}
+                          </span>
+                          <span className="line-clamp-2 leading-relaxed">{cleanChoice}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {message.scene_snapshot_url && (
                 <div className="mt-3 rounded-2xl overflow-hidden border border-pink-500/40 bg-black/60 shadow-2xl not-prose">
                   <img

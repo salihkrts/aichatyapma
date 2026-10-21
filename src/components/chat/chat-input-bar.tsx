@@ -255,48 +255,8 @@ export function ChatInputBar({
 
   return (
     <div className="relative p-3 sm:p-4 bg-gradient-to-t from-neutral-950 via-neutral-950/95 to-transparent">
-      {/* 1. SENARYO BAŞLATICILAR & HIZLI KARAR SEÇENEKLERİ (Mobile Horizontal Swipe Chips / Desktop Grid) */}
-      {branchChoices.length > 0 && !isLoading && (
-        <div className="max-w-4xl mx-auto mb-2">
-          <div className="flex items-center gap-1.5 mb-1 px-1">
-            <Sparkles className="size-3 text-amber-400" />
-            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300/90">
-              <span className="hidden sm:inline">Hızlı Karar & Eylem Seçenekleri:</span>
-              <span className="sm:hidden">Hazır Karar Seçenekleri (Kaydır & Seç):</span>
-            </span>
-          </div>
-          <div className="flex sm:grid sm:grid-cols-3 overflow-x-auto no-scrollbar gap-1.5 sm:gap-2 pb-1">
-            {branchChoices.map((choice, idx) => {
-              const cleanChoice = choice
-                .replace(/^\d+[\.\)]\s*/, "")
-                .replace(/^[-*•]\s*/, "")
-                .replace(/^["'«“]/, "")
-                .replace(/["'»”]$/, "")
-                .trim();
-              return (
-                <motion.button
-                  key={idx}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => handleSuggestionClick(cleanChoice)}
-                  className="shrink-0 sm:shrink text-left px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-[11px] sm:text-xs font-medium bg-gradient-to-r from-purple-950/60 via-neutral-900/90 to-indigo-950/50 hover:from-purple-900/70 hover:to-pink-900/60 border border-purple-500/30 hover:border-purple-400 text-purple-100 transition shadow-sm active:scale-95 cursor-pointer flex items-center gap-2 max-w-[280px] sm:max-w-none"
-                >
-                  <span className="size-4.5 sm:size-5 rounded-md sm:rounded-lg bg-purple-500/25 border border-purple-400/30 text-purple-300 font-bold text-[9px] sm:text-[10px] flex items-center justify-center shrink-0">
-                    {idx + 1}
-                  </span>
-                  <span className="truncate sm:line-clamp-2 leading-snug">{cleanChoice}</span>
-                </motion.button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* 2. Suggestions Chips Bar */}
-      {suggestions.length > 0 && branchChoices.length === 0 && (
+      {/* Suggestions Chips Bar */}
+      {suggestions.length > 0 && (
         <div className="max-w-4xl mx-auto mb-2.5 overflow-x-auto no-scrollbar flex items-center gap-1.5 py-1">
           <div className="flex items-center gap-1.5 flex-nowrap shrink-0">
             {suggestions.map((suggestion, idx) => (

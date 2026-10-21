@@ -1097,7 +1097,7 @@ export function ChatView({
                 userDisplayName={currentUserProfile.displayName}
                 voiceId={selectedVoiceId}
                 isLastMessage={index === messages.length - 1}
-                branchChoices={[]}
+                branchChoices={index === messages.length - 1 ? branchChoices : []}
                 onSelectChoice={(choice) => handleSendMessage(choice)}
                 onEdit={handleEditMessage}
                 onDelete={handleDeleteMessage}
@@ -1222,7 +1222,7 @@ export function ChatView({
               : "Karakterine bir şey yaz..."
           }
           suggestions={getCharacterSuggestions(character)}
-          branchChoices={branchChoices}
+          branchChoices={[]}
         />
       </main>
 
