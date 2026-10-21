@@ -7,6 +7,8 @@ import { FALLBACK_PERSONAS } from "@/lib/personas";
 import {
   buildRpgSimulationPromptBlock,
   parseRoleplayOutput,
+  isRomanticIntention,
+  isPlatonicIntention,
   type RpgHudState,
 } from "@/lib/rpg/rpg-engine";
 import type { UserTier } from "@/lib/redis";
@@ -42,10 +44,23 @@ interface IncomingUserProfile {
   persona_notes?: string;
 }
 
-function getRelationshipLabel(score: number): string {
-  if (score >= 90) return "🔥 Eş / Hayat Arkadaşı / Tutkulu Bağ (Seviye 5/5)";
-  if (score >= 75) return "💍 Sevgili / Manita / Romantik Aşk (Seviye 4/5)";
-  if (score >= 60) return "💘 Flört / Hoşlanan / Çekim (Seviye 3/5)";
+function getRelationshipLabel(score: number, userMessage = ""): string {
+  const isRomance = isRomanticIntention(userMessage);
+  if (score >= 90) {
+    return isRomance
+      ? "🔥 Eş / Hayat Arkadaşı / Tutkulu Bağ (Seviye 5/5)"
+      : "🛡️ Sarsılmaz Can Yoldaşı & Ruh Bağı (Seviye 5/5)";
+  }
+  if (score >= 75) {
+    return isRomance
+      ? "💍 Sevgili / Manita / Romantik Aşk (Seviye 4/5)"
+      : "💎 Can Ciğer Kanka / Sadık Dost (Seviye 4/5)";
+  }
+  if (score >= 60) {
+    return isRomance
+      ? "💘 Flört / Hoşlanan / Çekim (Seviye 3/5)"
+      : "🤝 Yakın Dost & Sırdaş (Seviye 3/5)";
+  }
   if (score >= 35) return "🤝 Güvenilir Arkadaş / Samimi (Seviye 2/5)";
   if (score >= 15) return "🛡️ Tanıdık / İlk Sohbetler (Seviye 1/5)";
   return "⚔️ Yabancı / Mesafeli (Seviye 0/5)";
@@ -161,7 +176,9 @@ function buildFullCharacterSystemPrompt(
     sections.push(`\n=== KARŞINDAKİ KULLANICI PROFİLİ ===\n${userLines.join("\n")}`);
   }
 
-  const relLabel = getRelationshipLabel(affinityScore);
+  const isRomance = isRomanticIntention(userMessage);
+  const isPlatonic = isPlatonicIntention(userMessage) && !isRomance;
+  const relLabel = getRelationshipLabel(affinityScore, userMessage);
   sections.push(
     `\n=== İLİŞKİ VE BAĞ SEVİYESİ ===\nAranızdaki Güncel Yakınlık: ${relLabel} (%${Math.min(
       100,
@@ -169,14 +186,15 @@ function buildFullCharacterSystemPrompt(
     )}). Davranışlarını, sıcaklığını ve samimiyetini bu seviyeye göre uyarla.`
   );
 
-  // Dynamic Romantic & Intimacy Unlocking Directive
-  const isRomanticContext =
-    affinityScore >= 60 ||
-    /sevgili|manita|aşkım|birtanem|hayatım|canım|eşim|kocam|karım|öp|sarıl|yatak|tutku|arzu|evlen|çocuk|seni seviyorum|dudak|azgın/i.test(
-      userMessage
+  // Dynamic Context: Platonic Friendship vs Romantic Intimacy
+  if (isPlatonic) {
+    sections.push(
+      `\n=== DOSTLUK, KANKALIK VE YOLDAŞLIK DİNAMİĞİ (AŞK/FLÖRT DEĞİL) ===
+Kullanıcı ile aranızdaki bağ BİR AŞK VEYA FLÖRT DEĞİLDİR; gerçek, samimi, sarsılmaz bir dostluk, kankalık, kardeşlik veya yoldaşlıktır.
+- Kullanıcıya ASLA romantik, flörtöz veya yatak odası imalarıyla yaklaşma. Ona kankan, en yakın arkadaşın, sırdaşın veya sadık bir silah arkadaşın gibi davran.
+- Birbirinize arka çıkın, takılın, dertleşin, espriler yapın ve güven verin.`
     );
-
-  if (isRomanticContext) {
+  } else if (isRomance) {
     sections.push(
       `\n=== ROMANTİK VE YAKIN İLİŞKİ DİREKTİFİ (ÖZEL KİLİT AÇILDI) ===
 Kullanıcı ile aranızda derin bir duygusal bağ, flört, aşk veya evlilik/sevgililik bağı bulunmaktadır.
@@ -232,11 +250,8 @@ function generateInCharacterResponse(
   const charName = (characterData?.name || "").toLowerCase();
   const name = characterData?.name || "Karakter";
 
-  const isRomantic =
-    affinityScore >= 60 ||
-    /sevgili|manita|aşkım|birtanem|hayatım|canım|eşim|kocam|karım|öp|sarıl|yatak|tutku|arzu|evlen|çocuk|seni seviyorum|dudak|azgın/i.test(
-      msg
-    );
+  const isRomantic = isRomanticIntention(msg);
+  const isPlatonic = isPlatonicIntention(msg) && !isRomantic;
 
   if (isRomantic) {
     if (cId.includes("aylin") || charName.includes("aylin")) {
@@ -246,6 +261,16 @@ function generateInCharacterResponse(
       return `*Kadehini kenara bırakıp aradaki mesafeyi tamamen kapatır, güçlü eliyle belini kavrayıp seni kendine çeker ve derin, tutkulu gözlerle bakar* "Benim yanımdasın. Bu şehirde hiçbir şey senin bana ait olduğun gerçeğini değiştiremez. Gel buraya, bu gece sadece ikimiz varız..."\n[emotion:passionate] [affection:+5] [choices: 1. Göğsüne yaslanıp ona sarıl | 2. Gözlerinin içine bakıp elini tut | 3. Dudaklarına doğru uzan]`;
     }
     return `*Gözlerindeki sıcak arzuyla sana bir adım yaklaşır, ellerini ellerine kenetleyip kalbinin atışını hissettirir* "Söylediklerin içimi eritiyor... Seninle bu anı paylaşmak, aramızdaki bu bağı hissetmek bana o kadar iyi geliyor ki. Yanımda kal, bırak bu an hiç bitmesin..."\n[emotion:loving] [affection:+3] [choices: 1. Sıkıca sarılıp kulağına fısılda | 2. Elini tutup gözlerine odaklan | 3. Yavaşça yanağından öp]`;
+  }
+
+  if (isPlatonic) {
+    if (cId.includes("aylin") || charName.includes("aylin")) {
+      return `*Gözlerini devirip hafifçe tebessüm eder* "İyi ki hal hatır sordun kanka! Laboratuvarda deneylerle uğraşıyordum kafam kazan gibi oldu. Gel otur da iki laflayalım, kahve var mı?"\n[emotion:smug] [affection:+2] [choices: 1. Kahve uzatıp "Biraz mola ver" de | 2. "Deney nasıl gidiyor anlat bakalım" | 3. Eğlenceli bir dedikodu aç]`;
+    }
+    if (cId.includes("baran") || charName.includes("baran")) {
+      return `*Viskisinden bir yudum alıp başını onaylar gibi sallar* "Sana güveniyorum dostum. Bu masada oturan az sayıda mert insandan birisin. Sırt sırta verdik mi bizi kimse yıkamaz. Söyle bakalım, yeni havadisler nedir?"\n[emotion:neutral] [affection:+2] [choices: 1. Masaya oturup durumu özetle | 2. "Her zaman arkandayım ortak" de | 3. Yeni planı konuşalım]`;
+    }
+    return `*Gülümseyerek sana döner ve samimi bir tebessümle başını sallar* "Eyvallah can dostum! Seninle konuşmak her zaman kafa dağıtıyor. Anlat bakalım, ne var ne yok?"\n[emotion:happy] [affection:+2] [choices: 1. Neler yaptığını samimiyetle anlat | 2. "Asıl seni dinleyelim kanka" de | 3. Birlikte bir plan öner]`;
   }
 
   // Non-romantic responsive fallbacks tailored to context:
@@ -332,6 +357,7 @@ export async function POST(req: NextRequest) {
         authorsNote,
         hudState: (hudState as RpgHudState) || undefined,
         isMathTutor,
+        contextText: message,
       });
 
       const systemPrompt = `${baseSystemPrompt}\n\n${rpgBlock}`;
@@ -353,18 +379,17 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // Check for romantic/intimate context to guide conversational behavior
-      const isRomanticContext =
-        affinityScore >= 60 ||
-        /sevgili|manita|aşkım|birtanem|hayatım|canım|eşim|kocam|karım|öp|sarıl|yatak|tutku|arzu|evlen|çocuk|seni seviyorum|dudak|azgın/i.test(
-          message
-        );
+      // Check for romantic vs platonic intention from user message & history
+      const isRomance = isRomanticIntention(message);
+      const isPlatonic = isPlatonicIntention(message) && !isRomance;
 
       // Injects dynamic narrative guidance without forcing jarring action clichés
       let finalUserMessage = effectivePromptMessage;
       if (!continueWithoutUser) {
-        if (isRomanticContext) {
+        if (isRomance) {
           finalUserMessage += `\n\n[DİREKTİF: Karakter olarak kullanıcının romantik, flörtöz veya samimi sözlerine doğrudan ve içtenlikle karşılık ver. Aranızdaki fiziksel yakınlığı, bakışlarını ve mimiklerini *yıldız içinde* hissettir. Asla aksiyon/tehlike sokma. Yanıtının sonuna mutlaka sahneye tam uyan 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+        } else if (isPlatonic) {
+          finalUserMessage += `\n\n[DİREKTİF: Karakter olarak kullanıcının dostça/kankaca sözlerine gerçek bir yakın dost, kanka veya yoldaş gibi samimiyetle karşılık ver. ASLA aşık/flörtöz davranma. Yanıtının sonuna dostça 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
         } else {
           finalUserMessage += `\n\n[DİREKTİF: Karakter olarak kullanıcının sözlerine doğrudan karşılık ver ve sohbeti doğal bir şekilde ilerlet. Mimiklerini ve eylemlerini *yıldız içinde* aktar. Yanıtının sonuna sahneye özel 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
         }

@@ -144,10 +144,20 @@ export const EMOTION_MAP: Record<EmotionKey, EmotionVisualMeta> = {
 };
 
 // ============================================================================
-// 2. AFFECTION / RELATIONSHIP METER (0 - 100)
+// 2. AFFECTION / RELATIONSHIP METER (0 - 100) & INTENTION DETECTOR
 // ============================================================================
+export type AffectionStageKey =
+  | "ENEMY"
+  | "STRANGER"
+  | "FRIEND"
+  | "CRUSH"
+  | "LOVER"
+  | "SPOUSE"
+  | "CLOSE_ALLY"
+  | "SOULMATE";
+
 export interface AffectionStageMeta {
-  stageKey: "ENEMY" | "STRANGER" | "FRIEND" | "CRUSH" | "LOVER" | "SPOUSE";
+  stageKey: AffectionStageKey;
   title: string;
   rangeLabel: string;
   colorClass: string;
@@ -155,8 +165,25 @@ export interface AffectionStageMeta {
   promptInstruction: string;
 }
 
-export function getAffectionStage(score: number): AffectionStageMeta {
+export function isRomanticIntention(text: string): boolean {
+  if (!text) return false;
+  return /\b(sevgili|sevgilim|manita|manitam|aşkım|askim|birtanem|hayatım|hayatim|eşim|esim|kocam|karım|karim|seni seviyorum|öp beni|öpeyim|yatak odası|yatakta|yatak|tutku|arzu|arzuluyorum|evlenelim|çocuğumuz|azgın|flört|flörtöz|dudak|öpmek|sarılalım)\b/i.test(
+    text
+  );
+}
+
+export function isPlatonicIntention(text: string): boolean {
+  if (!text) return false;
+  return /\b(kanka|kankam|dostum|dost|kardeşim|kardesim|bro|ortağım|ortagim|reis|hocam|komutanım|ahbap|abi|kardeş|sırdaş|sadece arkadaş|arkadaşız|arkadasiz|arkadaşımsın)\b/i.test(
+    text
+  );
+}
+
+export function getAffectionStage(score: number, contextText = ""): AffectionStageMeta {
   const clamped = Math.max(0, Math.min(100, score));
+  const isRomance = isRomanticIntention(contextText);
+  const isPlatonic = isPlatonicIntention(contextText) && !isRomance;
+
   if (clamped <= 19) {
     return {
       stageKey: "ENEMY",
@@ -191,35 +218,69 @@ export function getAffectionStage(score: number): AffectionStageMeta {
     };
   }
   if (clamped <= 74) {
+    if (isRomance) {
+      return {
+        stageKey: "CRUSH",
+        title: "💘 Flört / Hoşlanan",
+        rangeLabel: "60 - 74",
+        colorClass: "text-fuchsia-300 border-fuchsia-500/40 bg-fuchsia-500/15",
+        barGradient: "from-fuchsia-600 to-pink-500",
+        promptInstruction:
+          "Kullanıcıya karşı belirgin bir çekim ve tatlı bir flört besliyorsun (Seviye: Flört 60-74). Sözlerin cilveli, imalı ve sıcak olsun.",
+      };
+    }
     return {
-      stageKey: "CRUSH",
-      title: "💘 Flört / Hoşlanan",
+      stageKey: "CLOSE_ALLY",
+      title: "💎 Yakın Dost / Sırdaş",
       rangeLabel: "60 - 74",
-      colorClass: "text-fuchsia-300 border-fuchsia-500/40 bg-fuchsia-500/15",
-      barGradient: "from-fuchsia-600 to-pink-500",
+      colorClass: "text-cyan-300 border-cyan-500/40 bg-cyan-500/15",
+      barGradient: "from-cyan-600 to-blue-500",
       promptInstruction:
-        "Kullanıcıya karşı belirgin bir çekim, tatlı bir flört ve arzu besliyorsun (Seviye: Flört 60-74). Sözlerin cilveli, imalı ve sıcak olsun. Tatlı sataşmalar yap, hafif dokunuşları hissettir.",
+        "Kullanıcı senin güvendiğin yakın bir dostun ve sırdaşın (Seviye: Yakın Dost 60-74). Flört etme; sağlam bir kanka, ortak veya dost gibi güven ver, destek ol ve içten konuş.",
     };
   }
   if (clamped <= 89) {
+    if (isRomance) {
+      return {
+        stageKey: "LOVER",
+        title: "💍 Sevgili / Manita",
+        rangeLabel: "75 - 89",
+        colorClass: "text-pink-300 border-pink-500/40 bg-pink-500/15",
+        barGradient: "from-pink-600 to-rose-500",
+        promptInstruction:
+          "Kullanıcı senin sevgilin / manitan (Seviye: Sevgili 75-89). Ona sevgi dolu sözlerle hitap et. Romantik yakınlık, sarılma, öpüşme ve samimi aşka açıksın.",
+      };
+    }
     return {
-      stageKey: "LOVER",
-      title: "💍 Sevgili / Manita",
+      stageKey: "CLOSE_ALLY",
+      title: "💎 Can Ciğer Kanka / Sadık Yoldaş",
       rangeLabel: "75 - 89",
-      colorClass: "text-pink-300 border-pink-500/40 bg-pink-500/15",
-      barGradient: "from-pink-600 to-rose-500",
+      colorClass: "text-cyan-300 border-cyan-500/40 bg-cyan-500/15",
+      barGradient: "from-cyan-500 to-indigo-500",
       promptInstruction:
-        "Kullanıcı senin sevgilin / manitan (Seviye: Sevgili 75-89). Ona 'aşkım', 'sevgilim', 'hayatım' gibi sevgi sözcükleriyle hitap et. Romantik yakınlık, sarılma, öpüşme ve samimi aşka tamamen açıksın.",
+        "Kullanıcı senin en sadık dostun, can yoldaşın ve can ciğer kankan (Seviye: Sadık Yoldaş 75-89). Asla flörtöz konuşma; tam anlamıyla güvenilir bir dost, kardeş gibi davran, sırt sırta ver ve sırlarını paylaş.",
+    };
+  }
+  // 90 - 100
+  if (isRomance) {
+    return {
+      stageKey: "SPOUSE",
+      title: "🔥 Eş / Tutkulu Bağ",
+      rangeLabel: "90 - 100",
+      colorClass: "text-rose-300 border-rose-500/40 bg-rose-500/15",
+      barGradient: "from-rose-600 via-pink-500 to-purple-600",
+      promptInstruction:
+        "Kullanıcı senin hayat arkadaşın, eşin ve en büyük tutkun (Seviye: Eş / Tutkulu Bağ 90-100). Derin tutku, tensel ve duygusal samimiyet ve sarsılmaz bir bağlılıkla karşılık ver.",
     };
   }
   return {
-    stageKey: "SPOUSE",
-    title: "🔥 Eş / Tutkulu Bağ",
+    stageKey: "SOULMATE",
+    title: "🛡️ Sarsılmaz Ruh Bağı / Can Yoldaşı",
     rangeLabel: "90 - 100",
-    colorClass: "text-rose-300 border-rose-500/40 bg-rose-500/15",
-    barGradient: "from-rose-600 via-pink-500 to-purple-600",
+    colorClass: "text-purple-300 border-purple-500/40 bg-purple-500/15",
+    barGradient: "from-purple-600 to-indigo-500",
     promptInstruction:
-      "Kullanıcı senin hayat arkadaşın, eşin ve en büyük tutkun (Seviye: Eş / Tutkulu Bağ 90-100). Aranızda hiçbir mesafe yok; derin tutku, tensel ve duygusal yakınlık, yatak odası samimiyeti, sahiplenme ve sarsılmaz bir bağlılıkla sevgi göster.",
+      "Kullanıcı senin hayatındaki en değerli insan, adeta can yoldaşın (Seviye: Sarsılmaz Can Dostu 90-100). Flört değil; ister kankalık ister silah arkadaşlığı olsun, aranızda sonsuz bir güven ve sadakat var. Birbiriniz için her şeyi göze alırsınız.",
   };
 }
 
@@ -277,8 +338,9 @@ export function buildRpgSimulationPromptBlock(params: {
   authorsNote?: string;
   hudState?: RpgHudState;
   isMathTutor?: boolean;
+  contextText?: string;
 }): string {
-  const stage = getAffectionStage(params.affectionScore);
+  const stage = getAffectionStage(params.affectionScore, params.contextText);
 
   const lines: string[] = [
     `=== DERİN ROL YAPMA (RPG) & SİMÜLASYON MOTORU KURALLARI ===`,

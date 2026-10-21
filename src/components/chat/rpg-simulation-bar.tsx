@@ -160,7 +160,7 @@ export function RpgSimulationBar({
   const lastSpokenAssistantTextRef = useRef<string>("");
 
   const emotionMeta = EMOTION_MAP[emotion] || EMOTION_MAP.neutral;
-  const affectionStage = getAffectionStage(affectionScore);
+  const affectionStage = getAffectionStage(affectionScore, lastAssistantMessageText || "");
 
   const handleSpeakTTS = async (textToSpeak?: string) => {
     const raw =
