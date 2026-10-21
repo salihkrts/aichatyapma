@@ -1097,7 +1097,7 @@ export function ChatView({
                 userDisplayName={currentUserProfile.displayName}
                 voiceId={selectedVoiceId}
                 isLastMessage={index === messages.length - 1}
-                branchChoices={branchChoices}
+                branchChoices={[]}
                 onSelectChoice={(choice) => handleSendMessage(choice)}
                 onEdit={handleEditMessage}
                 onDelete={handleDeleteMessage}
@@ -1129,15 +1129,16 @@ export function ChatView({
 
         {/* Bot Control Strip: Continue Speaking / Delete & Regenerate Last Bot Message */}
         {character && !isLoading && (
-          <div className="max-w-3xl w-full mx-auto px-4 pt-1 flex flex-wrap items-center justify-center gap-2 z-20">
+          <div className="max-w-3xl w-full mx-auto px-3 pt-1 flex items-center justify-center gap-1.5 z-20">
             <button
               type="button"
               onClick={() => handleBotContinueSpeaking()}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-600/20 hover:bg-purple-600/35 border border-purple-500/40 text-purple-200 text-xs font-semibold shadow-sm transition cursor-pointer"
+              className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-purple-600/20 hover:bg-purple-600/35 border border-purple-500/40 text-purple-200 text-[11px] sm:text-xs font-semibold shadow-sm transition active:scale-95 cursor-pointer whitespace-nowrap"
               title="Sen hiçbir şey yazmadan bot konuşmaya devam etsin"
             >
               <span>▶️</span>
-              <span>Sen Yazmadan {character.name.split(" ")[0]} Konuşsun / Devam Etsin</span>
+              <span className="hidden sm:inline">Sen Yazmadan {character.name.split(" ")[0]} Konuşsun</span>
+              <span className="sm:hidden">Devam Ettir</span>
             </button>
 
             {lastMessage && lastMessage.role === "assistant" && (
@@ -1145,20 +1146,22 @@ export function ChatView({
                 <button
                   type="button"
                   onClick={() => handleRegenerate(lastMessage.id)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/10 border border-white/10 text-neutral-300 hover:text-white text-xs transition cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-white/[0.04] hover:bg-white/10 border border-white/10 text-neutral-300 hover:text-white text-[11px] sm:text-xs transition active:scale-95 cursor-pointer whitespace-nowrap"
                   title="Botun son mesajını sil ve yeni bir cevap üret"
                 >
                   <span>🔄</span>
-                  <span>Son Mesajı Yeniden Yazdır</span>
+                  <span className="hidden sm:inline">Son Mesajı Yeniden Yazdır</span>
+                  <span className="sm:hidden">Yenile</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDeleteMessage(lastMessage.id)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-950/30 hover:bg-red-900/40 border border-red-500/30 text-red-300 text-xs transition cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-red-950/30 hover:bg-red-900/40 border border-red-500/30 text-red-300 text-[11px] sm:text-xs transition active:scale-95 cursor-pointer whitespace-nowrap"
                   title="Botun son mesajını sil"
                 >
                   <span>🗑️</span>
-                  <span>Son Mesajı Sil</span>
+                  <span className="hidden sm:inline">Son Mesajı Sil</span>
+                  <span className="sm:hidden">Sil</span>
                 </button>
               </>
             )}
@@ -1167,13 +1170,13 @@ export function ChatView({
 
         {/* Token Kalan & Kayıt Ol Yönlendirme Şeridi */}
         {userTokenInfo && (
-          <div className="max-w-4xl w-full mx-auto px-4 pt-2">
-            <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-neutral-900/80 border border-white/10 text-xs backdrop-blur-md">
-              <div className="flex items-center gap-2">
+          <div className="max-w-4xl w-full mx-auto px-3 pt-1">
+            <div className="flex items-center justify-between px-2.5 py-1 rounded-lg bg-neutral-900/60 border border-white/5 text-[11px] backdrop-blur-md">
+              <div className="flex items-center gap-1.5">
                 <span>🪙</span>
-                <span className="text-[11px] text-neutral-400">Deneme Jetonun:</span>
+                <span className="text-neutral-400">Jeton:</span>
                 <span
-                  className={`font-mono font-bold text-xs ${
+                  className={`font-mono font-bold ${
                     userTokenInfo.tokens <= 10
                       ? "text-red-400 animate-pulse"
                       : "text-amber-400"
@@ -1183,7 +1186,7 @@ export function ChatView({
                 </span>
                 {!userTokenInfo.isAdmin && (
                   <span className="text-[10px] text-neutral-500 hidden sm:inline">
-                    (Her yapay zeka cevabında -1)
+                    (Cevap başına -1)
                   </span>
                 )}
               </div>
@@ -1197,10 +1200,10 @@ export function ChatView({
                       })
                     )
                   }
-                  className="px-2.5 py-1 rounded-lg bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-purple-200 hover:text-white text-[11px] font-semibold transition cursor-pointer flex items-center gap-1 shadow-sm"
+                  className="px-2 py-0.5 rounded-md bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-purple-200 hover:text-white text-[10px] font-semibold transition cursor-pointer flex items-center gap-1 shadow-sm"
                 >
                   <span>Ücretsiz Hesap Aç</span>
-                  <span className="text-xs">➔</span>
+                  <span className="text-[9px]">➔</span>
                 </button>
               )}
             </div>

@@ -494,14 +494,14 @@ export function RpgSimulationBar({
   };
 
   return (
-    <div className="relative z-20 border-b border-white/10 bg-neutral-950/85 backdrop-blur-xl px-3 sm:px-5 py-2">
-      <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2">
+    <div className="relative z-20 border-b border-white/10 bg-neutral-950/85 backdrop-blur-xl px-2.5 sm:px-5 py-1.5 sm:py-2">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-1 sm:gap-2">
         {/* LEFT: Dynamic Emotion Sprite Badge + 5-Stage Affection Meter */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5">
           {/* 1. Dynamic Emotion Sprite Avatar & Status */}
           <div
-            className={`flex items-center gap-2 px-2.5 py-1 rounded-xl border text-xs font-semibold transition-all ${emotionMeta.badgeClass}`}
-            title="Dinamik Duygu Spriteları (LLM yanıtından otomatik çıkarılır)"
+            className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-xl border text-[11px] sm:text-xs font-semibold transition-all shrink-0 ${emotionMeta.badgeClass}`}
+            title={`Dinamik Duygu Spriteları: ${emotionMeta.label}`}
           >
             <div className="relative">
               {characterAvatar ? (
@@ -509,35 +509,41 @@ export function RpgSimulationBar({
                   src={characterAvatar}
                   alt={characterName}
                   style={{ filter: emotionMeta.filterCss }}
-                  className={`size-6 rounded-full object-cover ring-2 transition-all ${emotionMeta.ringColor}`}
+                  className={`size-5 sm:size-6 rounded-full object-cover ring-2 transition-all ${emotionMeta.ringColor}`}
                 />
               ) : (
-                <span className="text-sm">{emotionMeta.emoji}</span>
+                <span className="text-xs sm:text-sm">{emotionMeta.emoji}</span>
               )}
-              <span className="absolute -bottom-1 -right-1 text-[11px]">
+              <span className="absolute -bottom-1 -right-1 text-[10px] sm:text-[11px]">
                 {emotionMeta.emoji}
               </span>
             </div>
-            <span>Duygu: {emotionMeta.label}</span>
+            <span className="whitespace-nowrap">
+              <span className="hidden sm:inline">Duygu: </span>
+              {emotionMeta.label.split("/")[0].trim()}
+            </span>
           </div>
 
           {/* 2. Affection / Relationship Meter (0-100) */}
           <div
-            className={`flex items-center gap-2 px-2.5 py-1 rounded-xl border text-xs font-semibold ${affectionStage.colorClass}`}
+            className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-xl border text-[11px] sm:text-xs font-semibold shrink-0 ${affectionStage.colorClass}`}
             title={`İlişki Kademesi (${affectionStage.rangeLabel}): ${affectionStage.promptInstruction}`}
           >
-            <Heart className="size-3.5 fill-current" />
-            <span>{affectionStage.title}</span>
-            <div className="w-14 h-2 rounded-full bg-black/50 overflow-hidden border border-white/10">
+            <Heart className="size-3 sm:size-3.5 fill-current shrink-0" />
+            <span className="whitespace-nowrap">
+              <span className="hidden sm:inline">{affectionStage.title}</span>
+              <span className="sm:hidden">{affectionStage.title.split("/")[0].trim()}</span>
+            </span>
+            <div className="w-10 sm:w-14 h-1.5 sm:h-2 rounded-full bg-black/50 overflow-hidden border border-white/10 shrink-0">
               <div
                 className={`h-full bg-gradient-to-r ${affectionStage.barGradient} transition-all duration-500`}
                 style={{ width: `${Math.max(4, Math.min(100, affectionScore))}%` }}
               />
             </div>
-            <span className="font-mono text-[11px]">{affectionScore}/100</span>
+            <span className="font-mono text-[10px] sm:text-[11px] shrink-0">{affectionScore}/100</span>
             {lastAffectionDelta !== 0 && (
               <span
-                className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${
+                className={`px-1 py-0.2 rounded text-[9px] sm:text-[10px] font-mono font-bold shrink-0 ${
                   lastAffectionDelta > 0
                     ? "bg-emerald-500/25 text-emerald-200"
                     : "bg-red-500/25 text-red-200"
@@ -550,7 +556,7 @@ export function RpgSimulationBar({
         </div>
 
         {/* RIGHT: Clean Single-Row Quick Controls + 3-Line (☰) RPG Tools Menu */}
-        <div className="relative flex items-center gap-2 shrink-0">
+        <div className="relative flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Quick Action 1: D20 Zar */}
           <button
             type="button"
@@ -560,7 +566,7 @@ export function RpgSimulationBar({
               setIsToolsMenuOpen(false);
               setShowDicePanel(next);
             }}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold border whitespace-nowrap transition cursor-pointer ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-xl text-[11px] font-bold border whitespace-nowrap transition cursor-pointer ${
               showDicePanel
                 ? "bg-amber-500/25 border-amber-400 text-amber-200 shadow-md"
                 : "bg-amber-500/10 border-amber-500/30 text-amber-200 hover:bg-amber-500/20"
@@ -568,7 +574,7 @@ export function RpgSimulationBar({
             title="D20 RPG Yetenek Zarı At & Hamle Yap"
           >
             <Dices className="size-3.5 text-amber-400" />
-            <span>🎲 D20 Zar</span>
+            <span className="hidden sm:inline">🎲 D20 Zar</span>
           </button>
 
           {/* Quick Action 2: Anı Resmet */}
@@ -576,22 +582,22 @@ export function RpgSimulationBar({
             type="button"
             disabled={isGeneratingSnapshot}
             onClick={handleGenerateSceneSnapshot}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-pink-600/20 hover:bg-pink-600/35 border border-pink-500/40 text-pink-200 whitespace-nowrap transition cursor-pointer disabled:opacity-50"
-            title="Son konuşulan sahneyi ve karakterin o anki duygusunu Fal.ai ile canlı resmet!"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-xl text-[11px] font-bold bg-pink-600/20 hover:bg-pink-600/35 border border-pink-500/40 text-pink-200 whitespace-nowrap transition cursor-pointer disabled:opacity-50"
+            title="Son konuşulan sahneyi canlı resmet!"
           >
             {isGeneratingSnapshot ? (
               <Loader2 className="size-3.5 animate-spin text-pink-300" />
             ) : (
               <Camera className="size-3.5 text-pink-400" />
             )}
-            <span>{isGeneratingSnapshot ? "Çiziliyor..." : "📸 Anı Resmet"}</span>
+            <span className="hidden sm:inline">{isGeneratingSnapshot ? "Çiziliyor..." : "📸 Anı Resmet"}</span>
           </button>
 
           {/* 3-Line (☰) RPG & Araçlar Menu Button */}
           <button
             type="button"
             onClick={() => setIsToolsMenuOpen((prev) => !prev)}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold border whitespace-nowrap transition cursor-pointer ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 rounded-xl text-xs font-bold border whitespace-nowrap transition cursor-pointer ${
               isToolsMenuOpen
                 ? "bg-purple-600 border-purple-400 text-white shadow-lg"
                 : "bg-neutral-900 hover:bg-neutral-800 border-white/15 text-purple-200"
@@ -599,7 +605,8 @@ export function RpgSimulationBar({
             title="Tüm RPG, Ses, Zihin Haritası ve Sahne Araçlarını Aç"
           >
             {isToolsMenuOpen ? <X className="size-3.5" /> : <Menu className="size-3.5" />}
-            <span>RPG & Araçlar</span>
+            <span className="hidden sm:inline">RPG & </span>
+            <span>Araçlar</span>
           </button>
 
           {/* Right-Aligned 3-Line Popover Drawer */}
