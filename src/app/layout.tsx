@@ -17,12 +17,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Kael-AI | Yeni Nesil Yapay Zeka Karakter & Rol Platformu",
-    template: "%s | Kael-AI",
+    default: "KaelAIChat | Yeni Nesil Yapay Zeka Karakter & Rol Platformu",
+    template: "%s | KaelAIChat",
   },
   description:
-    "Kael-AI ile kendi yapay zeka karakterini oluştur, derin hafıza ve çoklu evren senaryolarında canlı sohbet et.",
+    "KaelAIChat ile kendi yapay zeka karakterini oluştur, derin hafıza ve çoklu evren senaryolarında canlı sohbet et.",
   keywords: [
+    "KaelAIChat",
     "Kael-AI",
     "yapay zeka",
     "karakter",

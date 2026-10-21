@@ -418,10 +418,10 @@ function UnifiedAppContent() {
             </div>
             <div className="hidden sm:block whitespace-nowrap">
               <span className="font-extrabold text-sm tracking-tight bg-gradient-to-r from-white via-purple-100 to-pink-200 bg-clip-text text-transparent block leading-none">
-                KAEL-AI
+                KAELAICHAT
               </span>
               <span className="text-[9px] font-mono text-purple-400 block mt-0.5 tracking-widest uppercase">
-                RP STUDIO
+                AI CHAT & FORGE
               </span>
             </div>
           </div>
