@@ -569,7 +569,7 @@ export function ChatView({
   ) => {
     if (!character || isLoading) return;
 
-    // Jeton Kontrolü (100 deneme jetonu, her cevapta -1)
+    // Jeton Kontrolü (100 deneme jetonu, her cevapta -5)
     const rawSession = localStorage.getItem("kael_auth_session");
     const parsedSession = rawSession ? JSON.parse(rawSession) : null;
     const currentUsername = parsedSession?.username || "misafir";
@@ -578,7 +578,7 @@ export function ChatView({
       (u) => u.username.toLowerCase() === currentUsername.toLowerCase()
     );
 
-    if (activeMe && !activeMe.isAdmin && activeMe.tokens <= 0) {
+    if (activeMe && !activeMe.isAdmin && activeMe.tokens < 5) {
       window.dispatchEvent(
         new CustomEvent("kael_open_onboarding", {
           detail: { reason: "tokens_exhausted" },
@@ -590,7 +590,7 @@ export function ChatView({
           id: `token-limit-${Date.now()}`,
           role: "assistant",
           content:
-            "🪙 **Ücretsiz 100 deneme jetonun bitti!**\n\nSohbete, sesli aramalara ve kendi karakterlerini oluşturmaya devam etmek için lütfen [ücretsiz hesap aç veya giriş yap].",
+            "🪙 **Jetonların Tükendi veya Yetersiz (En az 5 jeton gerekli)!**\n\nSohbete, sesli aramalara ve kendi karakterlerini oluşturmaya devam etmek için lütfen [ücretsiz hesap aç, giriş yap veya jeton yükle].",
           created_at: new Date().toISOString(),
         },
       ]);
@@ -651,7 +651,7 @@ export function ChatView({
         details: `${character.name} karakterine mesaj gönderdi (Ses: ${selectedVoiceId}).`,
         characterName: character.name,
         messageSnippet: userMessageText.slice(0, 180),
-        tokensDelta: -2,
+        tokensDelta: -5,
         severity: "info",
       });
     } catch {
@@ -760,13 +760,13 @@ export function ChatView({
         scrollToBottom(true);
 
         if (accumulatedAssistantText.trim()) {
-          // Her yapay zeka cevabında -1 jeton düşür
+          // Her yapay zeka cevabında -5 jeton düşür
           try {
             adjustUserTokens(
               currentUsername,
-              -1,
+              -5,
               `Yapay Zeka Yanıtı (${character.name})`,
-              `${character.name} karakterinden yanıt alındı (-1 Jeton).`,
+              `${character.name} karakterinden yanıt alındı (-5 Jeton).`,
               "chat"
             );
             window.dispatchEvent(new Event("kael_economy_updated"));
@@ -829,7 +829,7 @@ export function ChatView({
       (u) => u.username.toLowerCase() === currentUsername.toLowerCase()
     );
 
-    if (activeMe && !activeMe.isAdmin && activeMe.tokens <= 0) {
+    if (activeMe && !activeMe.isAdmin && activeMe.tokens < 5) {
       window.dispatchEvent(
         new CustomEvent("kael_open_onboarding", {
           detail: { reason: "tokens_exhausted" },
@@ -938,13 +938,13 @@ export function ChatView({
         scrollToBottom(true);
 
         if (accumulatedAssistantText.trim()) {
-          // Her yapay zeka cevabında -1 jeton düşür
+          // Her yapay zeka cevabında -5 jeton düşür
           try {
             adjustUserTokens(
               currentUsername,
-              -1,
+              -5,
               `Yapay Zeka Yanıtı (${character.name})`,
-              `${character.name} karakterinden yanıt alındı (-1 Jeton).`,
+              `${character.name} karakterinden yanıt alındı (-5 Jeton).`,
               "chat"
             );
             window.dispatchEvent(new Event("kael_economy_updated"));
@@ -1186,7 +1186,7 @@ export function ChatView({
                 </span>
                 {!userTokenInfo.isAdmin && (
                   <span className="text-[10px] text-neutral-500 hidden sm:inline">
-                    (Cevap başına -1)
+                    (Cevap başına -5)
                   </span>
                 )}
               </div>
