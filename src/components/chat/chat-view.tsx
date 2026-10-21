@@ -1043,6 +1043,7 @@ export function ChatView({
           onResetChat={handleResetChat}
           onForkCharacter={onForgeClick}
           onOpenBrainSettings={() => setBrainModalOpen(true)}
+          onBack={onExploreClick}
         />
 
         {/* RPG & Simülasyon Barı (D20 Zar, Envanter, Sahne Çizdir, Zihin Haritası, Dünya Olayı, Sesli Arama & A4 Sınav PDF) */}

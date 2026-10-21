@@ -55,6 +55,7 @@ import { VisualFxOverlay } from "@/components/fx/visual-fx-overlay";
 import { QuestsStreakModal } from "@/components/quests/quests-streak-modal";
 import { CharacterLivePing } from "@/components/notifications/character-live-ping";
 import { VisualNovelView } from "@/components/vn/visual-novel-view";
+import { MobileBottomNav } from "@/components/navigation/mobile-bottom-nav";
 import {
   ensureSessionUserInPlatform,
   getSystemConfig,
@@ -858,7 +859,7 @@ function UnifiedAppContent() {
       </header>
 
       {/* Main Unified View Canvas */}
-      <div className="relative z-10 flex-1 flex flex-col">
+      <div className={`relative z-10 flex-1 flex flex-col ${activeTab !== "chat" ? "pb-20 md:pb-0" : ""}`}>
         {/* VIEW 1: EXPLORE HUB */}
         {activeTab === "explore" && (
           <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -1269,6 +1270,20 @@ function UnifiedAppContent() {
           </div>
         )}
       </div>
+
+      {/* Mobil Alt Gezinme Çubuğu (Bottom Navigation Bar) */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        onSelectTab={(tab) => {
+          if (tab === "chat" && !selectedCharacterId) {
+            setActiveTab("explore");
+          } else {
+            setActiveTab(tab);
+          }
+        }}
+        isViewerAdmin={isViewerAdmin}
+        hasActiveCharacter={Boolean(selectedCharacterId)}
+      />
 
       {/* Görsel efektler: tıklama dalgası + sayfa geçiş taraması */}
       <VisualFxOverlay activeTab={activeTab} />

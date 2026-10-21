@@ -1,0 +1,30 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="128" fill="#0A0612"/>
+  <circle cx="256" cy="256" r="200" fill="url(#bg-glow)" opacity="0.8"/>
+  <defs>
+    <radialGradient id="bg-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#9333EA" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#0A0612" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="neon-grad" x1="120" y1="120" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A855F7"/>
+      <stop offset="0.5" stop-color="#EC4899"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="gold-crown" x1="160" y1="90" x2="352" y2="90" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE047"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Crown on Top -->
+  <path d="M190 150L225 180L256 125L287 180L322 150L310 205H202L190 150Z" fill="url(#gold-crown)" stroke="#FEF08A" stroke-width="3"/>
+
+  <!-- Stylized Letter K / AI Symbol -->
+  <path d="M175 195V355C175 361.6 180.4 367 187 367H205C211.6 367 217 361.6 217 355V195C217 188.4 211.6 183 205 183H187C180.4 183 175 188.4 175 195Z" fill="url(#neon-grad)"/>
+  <path d="M217 282L308 191C312 187 319 190 319 196V218C319 222 317 226 314 229L255 282L320 344C323 347 325 351 325 355V375C325 381 318 384 313 380L217 292V282Z" fill="url(#neon-grad)"/>
+
+  <!-- Sparkle Stars -->
+  <path d="M355 145L359 160L374 164L359 168L355 183L351 168L336 164L351 160L355 145Z" fill="#FDE047"/>
+  <path d="M135 325L138 337L150 340L138 343L135 355L132 343L120 340L132 337L135 325Z" fill="#C084FC"/>
+</svg>

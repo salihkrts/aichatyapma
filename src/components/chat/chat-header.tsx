@@ -19,6 +19,7 @@ import {
   Play,
   Square,
   Check,
+  ArrowLeft,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -58,6 +59,7 @@ interface ChatHeaderProps {
   onResetChat?: () => void;
   onForkCharacter?: () => void;
   onOpenBrainSettings?: () => void;
+  onBack?: () => void;
 }
 
 function getAffinityInfo(score: number) {
@@ -86,6 +88,7 @@ export function ChatHeader({
   onRemoveMemory,
   onResetChat,
   onOpenBrainSettings,
+  onBack,
 }: ChatHeaderProps) {
   const [newMemoryInput, setNewMemoryInput] = useState("");
   const [previewingVoiceId, setPreviewingVoiceId] = useState<string | null>(null);
@@ -121,7 +124,17 @@ export function ChatHeader({
   return (
     <header className="h-16 shrink-0 border-b border-white/10 bg-neutral-950/75 backdrop-blur-2xl flex items-center justify-between px-4 sm:px-6 z-10">
       {/* Left: Persona identity & status */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-2.5 min-w-0">
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="size-9 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 border border-white/10 flex items-center justify-center text-neutral-300 hover:text-white transition cursor-pointer shrink-0"
+            title="Geri Dön"
+          >
+            <ArrowLeft className="size-4" />
+          </button>
+        )}
         <div className="relative shrink-0">
           <Avatar className="size-10 border border-white/15 shadow-md">
             <AvatarImage
