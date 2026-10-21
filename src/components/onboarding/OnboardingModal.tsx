@@ -140,19 +140,15 @@ export function OnboardingModal({
       if (rawAcc) {
         const parsed: StoredAccountRecord[] = JSON.parse(rawAcc);
         if (Array.isArray(parsed)) {
-          const hasKael = parsed.some((a) => a.username.toLowerCase() === "kael");
-          const merged = hasKael ? parsed : [kaelFounderAccount, ...parsed];
-          setSavedAccounts(merged);
-          if (merged.length > 0 && !loginUsername) {
-            setLoginUsername(merged[0].username);
+          // Ziyaretçilere kael kurucu hesabını kart olarak gösterme
+          const userAccounts = parsed.filter((a) => a.username.toLowerCase() !== "kael");
+          setSavedAccounts(userAccounts);
+          if (userAccounts.length > 0 && !loginUsername) {
+            setLoginUsername(userAccounts[0].username);
           }
         }
       } else {
-        setSavedAccounts([kaelFounderAccount]);
-        localStorage.setItem(
-          "kael_registered_accounts",
-          JSON.stringify([kaelFounderAccount])
-        );
+        setSavedAccounts([]);
       }
     } catch {
       // ignore
@@ -170,6 +166,33 @@ export function OnboardingModal({
     const cleanUser = loginUsername.replace(/^@/, "").trim().toLowerCase();
     if (!cleanUser || !loginPassword.trim()) {
       setAuthNotice("⚠️ Lütfen kullanıcı adınızı ve şifrenizi girin.");
+      return;
+    }
+
+    // Kurucu Admin Girişi Koruması
+    if (cleanUser === "kael") {
+      if (loginPassword !== "123") {
+        setAuthNotice("❌ Kurucu şifresi hatalı!");
+        return;
+      }
+      const kaelSession: AuthSessionPayload = {
+        userId: "user-kael-founder",
+        username: "kael",
+        displayName: "Kael (Kurucu & Baş Yönetici)",
+        email: "kael@kael.ai",
+        birthDate: "2000-01-01",
+        isGuest: false,
+        isAdult: true,
+        nsfwEnabled: true,
+        avatarUrl: "/avatars/kaito.jpg",
+        coverUrl:
+          "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1500&auto=format&fit=crop&q=80",
+        bio: "👑 Kael-AI Kurucu & Baş Yönetici Hesabı",
+        joinedAt: "2026-01-01T00:00:00.000Z",
+      };
+      onSessionUpdated(kaelSession);
+      localStorage.setItem("kael_auth_session", JSON.stringify(kaelSession));
+      setAuthNotice("👑 Kurucu Admin olarak giriş yapıldı!");
       return;
     }
 

@@ -122,6 +122,7 @@ function UnifiedAppContent() {
     () => ensureSessionUserInPlatform(createInitialGuestSession())
   );
   const [sysConfig, setSysConfig] = useState<SystemGlobalConfig>(() => getSystemConfig());
+  const isViewerAdmin = isUserAuthorizedAdmin(authSession.username);
 
   const [personas, setPersonas] = useState<UserPersonaItem[]>([
     {
@@ -235,11 +236,18 @@ function UnifiedAppContent() {
       setActiveTab("chat");
     } else if (
       tabParam &&
-      ["explore", "chat", "vn", "groups", "forge", "store", "profile", "admin"].includes(tabParam)
+      ["explore", "chat", "vn", "groups", "forge", "store", "profile", ...(isViewerAdmin ? ["admin"] : [])].includes(tabParam)
     ) {
       setActiveTab(tabParam);
     }
-  }, [searchParams]);
+  }, [searchParams, isViewerAdmin]);
+
+  // Güvenlik kilidi: Yetkisiz kullanıcılar asla admin sekmesinde kalamaz
+  useEffect(() => {
+    if (activeTab === "admin" && !isViewerAdmin) {
+      setActiveTab("explore");
+    }
+  }, [activeTab, isViewerAdmin]);
 
   useEffect(() => {
     async function loadCharacters() {
@@ -371,7 +379,6 @@ function UnifiedAppContent() {
 
   const featured = FALLBACK_PERSONAS[0];
   const activePersona = personas.find((p) => p.isDefault) || personas[0];
-  const isViewerAdmin = isUserAuthorizedAdmin(authSession.username);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white selection:bg-purple-500 selection:text-white flex flex-col">
@@ -519,21 +526,21 @@ function UnifiedAppContent() {
               <span className="hidden lg:inline">Profil</span>
             </button>
 
-            {/* Sleek Icon-First Admin Button */}
-            <button
-              onClick={() => setActiveTab("admin")}
-              title="👑 Gelişmiş Admin Paneli (@kael)"
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all cursor-pointer ${
-                activeTab === "admin"
-                  ? "bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-md shadow-amber-500/30"
-                  : isViewerAdmin
-                  ? "bg-amber-500/15 text-amber-300 hover:bg-amber-500/30 border border-amber-500/30"
-                  : "text-neutral-500 hover:text-amber-300 hover:bg-white/5"
-              }`}
-            >
-              <Crown className="size-4 shrink-0" />
-              {activeTab === "admin" && <span className="hidden sm:inline">Admin</span>}
-            </button>
+            {/* Sleek Icon-First Admin Button (YALNIZCA YETKİLİ ADMİNLERDE GÖRÜNÜR) */}
+            {isViewerAdmin && (
+              <button
+                onClick={() => setActiveTab("admin")}
+                title="👑 Gelişmiş Admin Paneli (@kael)"
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all cursor-pointer ${
+                  activeTab === "admin"
+                    ? "bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-md shadow-amber-500/30"
+                    : "bg-amber-500/15 text-amber-300 hover:bg-amber-500/30 border border-amber-500/30"
+                }`}
+              >
+                <Crown className="size-4 shrink-0" />
+                {activeTab === "admin" && <span className="hidden sm:inline">Admin</span>}
+              </button>
+            )}
           </nav>
 
           {/* Right Controls: Compact Token Pill + User Avatar Pill + Icon-Only Menu */}
@@ -654,27 +661,42 @@ function UnifiedAppContent() {
                     </div>
                   </div>
 
-                  {/* Admin Quick Entry */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsRightMenuOpen(false);
-                      if (!isViewerAdmin) {
-                        handleSwitchToKaelAdmin();
-                      } else {
+                  {/* Admin Quick Entry (YALNIZCA YETKİLİ ADMİNLERDE GÖRÜNÜR) */}
+                  {isViewerAdmin ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsRightMenuOpen(false);
                         setActiveTab("admin");
-                      }
-                    }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 border border-amber-500/35 text-xs font-bold text-amber-200 transition cursor-pointer text-left"
-                  >
-                    <Crown className="size-4 text-amber-400 shrink-0" />
-                    <div>
-                      <div>👑 @kael Gelişmiş Admin Paneli</div>
-                      <div className="text-[10px] text-amber-300/80">
-                        Canlı kullanıcı radarı, token gönderimi & sistem kontrolü
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 border border-amber-500/35 text-xs font-bold text-amber-200 transition cursor-pointer text-left"
+                    >
+                      <Crown className="size-4 text-amber-400 shrink-0" />
+                      <div>
+                        <div>👑 Gelişmiş Admin Paneli</div>
+                        <div className="text-[10px] text-amber-300/80">
+                          Canlı kullanıcı radarı, token gönderimi & sistem kontrolü
+                        </div>
                       </div>
-                    </div>
-                  </button>
+                    </button>
+                  ) : authSession.isGuest ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsRightMenuOpen(false);
+                        setIsOnboardingOpen(true);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/40 text-xs font-bold text-purple-200 transition cursor-pointer text-left"
+                    >
+                      <Sparkles className="size-4 text-purple-400 shrink-0" />
+                      <div>
+                        <div>✨ Ücretsiz Hesap Aç / Giriş Yap</div>
+                        <div className="text-[10px] text-purple-300/80">
+                          100 deneme jetonunu kaybetme, sınırsız konuş
+                        </div>
+                      </div>
+                    </button>
+                  ) : null}
 
                   {/* Avatar & Profile Studio */}
                   <button
@@ -1179,7 +1201,7 @@ function UnifiedAppContent() {
         )}
 
         {/* VIEW 5: ADVANCED OVERLORD ADMIN PANEL (@kael & Authorized Admins Only) */}
-        {activeTab === "admin" && (
+        {activeTab === "admin" && isViewerAdmin && (
           <div className="flex-1 w-full">
             <AdminPanelView
               session={authSession}
