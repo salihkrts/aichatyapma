@@ -23,7 +23,12 @@ import {
 import { editMessageAction, deleteChatAction } from "@/app/actions/chat";
 import { FALLBACK_PERSONAS } from "@/lib/personas";
 import { resolveCharacterVoice, speakWithNeuralVoice } from "@/lib/voice/voices";
-import { recordPlatformActivity } from "@/lib/economy/economy-service";
+import {
+  recordPlatformActivity,
+  adjustUserTokens,
+  getPlatformUsers,
+  getSystemConfig,
+} from "@/lib/economy/economy-service";
 import type { Character, Chat, ChatWithCharacter } from "@/types/database";
 
 function extractUserFactsFromMessage(message: string): string[] {
@@ -241,6 +246,41 @@ export function ChatView({
     avatarUrl: "",
     displayName: "Sen",
   });
+
+  const [userTokenInfo, setUserTokenInfo] = useState<{
+    tokens: number;
+    isGuest: boolean;
+    isAdmin: boolean;
+  }>({
+    tokens: 100,
+    isGuest: true,
+    isAdmin: false,
+  });
+
+  const syncTokens = useCallback(() => {
+    try {
+      const rawSession = localStorage.getItem("kael_auth_session");
+      const parsedSession = rawSession ? JSON.parse(rawSession) : null;
+      const uname = parsedSession?.username || "misafir";
+      const users = getPlatformUsers();
+      const me = users.find((u) => u.username.toLowerCase() === uname.toLowerCase());
+      if (me) {
+        setUserTokenInfo({
+          tokens: me.tokens,
+          isGuest: Boolean(parsedSession?.isGuest),
+          isAdmin: Boolean(me.isAdmin),
+        });
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    syncTokens();
+    window.addEventListener("kael_economy_updated", syncTokens);
+    return () => window.removeEventListener("kael_economy_updated", syncTokens);
+  }, [syncTokens]);
 
   useEffect(() => {
     const loadProfile = () => {
@@ -528,6 +568,34 @@ export function ChatView({
   ) => {
     if (!character || isLoading) return;
 
+    // Jeton Kontrolü (100 deneme jetonu, her cevapta -1)
+    const rawSession = localStorage.getItem("kael_auth_session");
+    const parsedSession = rawSession ? JSON.parse(rawSession) : null;
+    const currentUsername = parsedSession?.username || "misafir";
+    const allUsers = getPlatformUsers();
+    const activeMe = allUsers.find(
+      (u) => u.username.toLowerCase() === currentUsername.toLowerCase()
+    );
+
+    if (activeMe && !activeMe.isAdmin && activeMe.tokens <= 0) {
+      window.dispatchEvent(
+        new CustomEvent("kael_open_onboarding", {
+          detail: { reason: "tokens_exhausted" },
+        })
+      );
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `token-limit-${Date.now()}`,
+          role: "assistant",
+          content:
+            "🪙 **Ücretsiz 100 deneme jetonun bitti!**\n\nSohbete, sesli aramalara ve kendi karakterlerini oluşturmaya devam etmek için lütfen [ücretsiz hesap aç veya giriş yap].",
+          created_at: new Date().toISOString(),
+        },
+      ]);
+      return;
+    }
+
     const userMessageText = text;
     const tempUserMsgId = `temp-${Date.now()}`;
     const tempAssistantMsgId = `assistant-${Date.now()}`;
@@ -690,11 +758,27 @@ export function ChatView({
 
         scrollToBottom(true);
 
-        if (autoSpeak && !voiceCallOpen && accumulatedAssistantText.trim()) {
-          speakWithNeuralVoice({
-            text: accumulatedAssistantText,
-            voiceId: selectedVoiceId,
-          });
+        if (accumulatedAssistantText.trim()) {
+          // Her yapay zeka cevabında -1 jeton düşür
+          try {
+            adjustUserTokens(
+              currentUsername,
+              -1,
+              `Yapay Zeka Yanıtı (${character.name})`,
+              `${character.name} karakterinden yanıt alındı (-1 Jeton).`,
+              "chat"
+            );
+            window.dispatchEvent(new Event("kael_economy_updated"));
+          } catch {
+            // ignore
+          }
+
+          if (autoSpeak && !voiceCallOpen) {
+            speakWithNeuralVoice({
+              text: accumulatedAssistantText,
+              voiceId: selectedVoiceId,
+            });
+          }
         }
       }
     } catch (err) {
@@ -734,6 +818,24 @@ export function ChatView({
   // Botun bizim bir şey yazmamıza gerek kalmadan konuşmaya devam etmesi
   const handleBotContinueSpeaking = async (customHistory?: ChatMessage[]) => {
     if (!character || isLoading) return;
+
+    // Jeton Kontrolü
+    const rawSession = localStorage.getItem("kael_auth_session");
+    const parsedSession = rawSession ? JSON.parse(rawSession) : null;
+    const currentUsername = parsedSession?.username || "misafir";
+    const allUsers = getPlatformUsers();
+    const activeMe = allUsers.find(
+      (u) => u.username.toLowerCase() === currentUsername.toLowerCase()
+    );
+
+    if (activeMe && !activeMe.isAdmin && activeMe.tokens <= 0) {
+      window.dispatchEvent(
+        new CustomEvent("kael_open_onboarding", {
+          detail: { reason: "tokens_exhausted" },
+        })
+      );
+      return;
+    }
 
     const historyToUse = customHistory || messages;
     const tempAssistantMsgId = `assistant-cont-${Date.now()}`;
@@ -834,11 +936,27 @@ export function ChatView({
 
         scrollToBottom(true);
 
-        if (autoSpeak && !voiceCallOpen && accumulatedAssistantText.trim()) {
-          speakWithNeuralVoice({
-            text: accumulatedAssistantText,
-            voiceId: selectedVoiceId,
-          });
+        if (accumulatedAssistantText.trim()) {
+          // Her yapay zeka cevabında -1 jeton düşür
+          try {
+            adjustUserTokens(
+              currentUsername,
+              -1,
+              `Yapay Zeka Yanıtı (${character.name})`,
+              `${character.name} karakterinden yanıt alındı (-1 Jeton).`,
+              "chat"
+            );
+            window.dispatchEvent(new Event("kael_economy_updated"));
+          } catch {
+            // ignore
+          }
+
+          if (autoSpeak && !voiceCallOpen) {
+            speakWithNeuralVoice({
+              text: accumulatedAssistantText,
+              voiceId: selectedVoiceId,
+            });
+          }
         }
       }
     } catch (err) {
@@ -1039,6 +1157,48 @@ export function ChatView({
                 </button>
               </>
             )}
+          </div>
+        )}
+
+        {/* Token Kalan & Kayıt Ol Yönlendirme Şeridi */}
+        {userTokenInfo && (
+          <div className="max-w-4xl w-full mx-auto px-4 pt-2">
+            <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-neutral-900/80 border border-white/10 text-xs backdrop-blur-md">
+              <div className="flex items-center gap-2">
+                <span>🪙</span>
+                <span className="text-[11px] text-neutral-400">Deneme Jetonun:</span>
+                <span
+                  className={`font-mono font-bold text-xs ${
+                    userTokenInfo.tokens <= 10
+                      ? "text-red-400 animate-pulse"
+                      : "text-amber-400"
+                  }`}
+                >
+                  {userTokenInfo.isAdmin ? "Sınırsız (Admin)" : `${userTokenInfo.tokens} / 100`}
+                </span>
+                {!userTokenInfo.isAdmin && (
+                  <span className="text-[10px] text-neutral-500 hidden sm:inline">
+                    (Her yapay zeka cevabında -1)
+                  </span>
+                )}
+              </div>
+              {userTokenInfo.isGuest && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("kael_open_onboarding", {
+                        detail: { reason: "header_click" },
+                      })
+                    )
+                  }
+                  className="px-2.5 py-1 rounded-lg bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-purple-200 hover:text-white text-[11px] font-semibold transition cursor-pointer flex items-center gap-1 shadow-sm"
+                >
+                  <span>Ücretsiz Hesap Aç</span>
+                  <span className="text-xs">➔</span>
+                </button>
+              )}
+            </div>
           </div>
         )}
 

@@ -113,25 +113,13 @@ function UnifiedAppContent() {
   const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
 
   // Auth / Guest Session & Multi-Persona State
-  // Default to @kael Founder Admin session so the user immediately has @kael privileges!
-  const [authSession, setAuthSession] = useState<AuthSessionPayload>(() => ({
-    userId: "user-kael-founder",
-    username: "kael",
-    displayName: "Kael (Kurucu & Baş Yönetici)",
-    email: "kael@kael.ai",
-    birthDate: "2000-01-01",
-    isGuest: false,
-    isAdult: true,
-    nsfwEnabled: true,
-    avatarUrl: "/avatars/kaito.jpg",
-    coverUrl:
-      "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1500&auto=format&fit=crop&q=80",
-    bio: "👑 Kael-AI Kurucu & Baş Yönetici Hesabı",
-    joinedAt: "2026-01-01T00:00:00.000Z",
-  }));
+  // Varsayılan: 100 deneme jetonlu Misafir Oturumu (Her yeni ziyaretçi misafir olarak başlar)
+  const [authSession, setAuthSession] = useState<AuthSessionPayload>(() => {
+    return createInitialGuestSession();
+  });
 
   const [currentUserEconomy, setCurrentUserEconomy] = useState<PlatformUserRecord>(
-    () => SEEDED_USERS[0]
+    () => ensureSessionUserInPlatform(createInitialGuestSession())
   );
   const [sysConfig, setSysConfig] = useState<SystemGlobalConfig>(() => getSystemConfig());
 
@@ -190,9 +178,10 @@ function UnifiedAppContent() {
         setAuthSession(parsedAuth);
         setCurrentUserEconomy(ensureSessionUserInPlatform(parsedAuth));
       } else {
-        // Save @kael as initial active session if none saved yet
-        localStorage.setItem("kael_auth_session", JSON.stringify(authSession));
-        setCurrentUserEconomy(ensureSessionUserInPlatform(authSession));
+        const guestSession = createInitialGuestSession();
+        localStorage.setItem("kael_auth_session", JSON.stringify(guestSession));
+        setAuthSession(guestSession);
+        setCurrentUserEconomy(ensureSessionUserInPlatform(guestSession));
       }
       setSysConfig(getSystemConfig());
 
@@ -222,11 +211,16 @@ function UnifiedAppContent() {
         // ignore
       }
     };
+    const openOnboardingHandler = () => {
+      setIsOnboardingOpen(true);
+    };
     window.addEventListener("kael_economy_updated", syncHandler);
     window.addEventListener("kael_profile_updated", loadSavedCharacters);
+    window.addEventListener("kael_open_onboarding", openOnboardingHandler);
     return () => {
       window.removeEventListener("kael_economy_updated", syncHandler);
       window.removeEventListener("kael_profile_updated", loadSavedCharacters);
+      window.removeEventListener("kael_open_onboarding", openOnboardingHandler);
     };
   }, [loadSavedCharacters]);
 

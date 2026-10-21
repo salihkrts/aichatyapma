@@ -136,10 +136,10 @@ export const DEFAULT_SYSTEM_CONFIG: SystemGlobalConfig = {
   announcementBanner:
     "🎉 Kael-AI 2.5 Güncellemesi Yayında! 14 Yeni Neural Anime/Türkçe Ses ve Kael Mağaza Sistemi Aktif!",
   announcementActive: true,
-  defaultNewUserTokens: 500,
-  chatMessageTokenCost: 2,
+  defaultNewUserTokens: 100,
+  chatMessageTokenCost: 1,
   voiceCallTokenCost: 5,
-  imageGenTokenCost: 15,
+  imageGenTokenCost: 10,
   globalNsfwAllowed: true,
   authorizedAdmins: ["kael"],
 };
@@ -151,10 +151,10 @@ export const VIP_PLANS: VipPlanItem[] = [
     tagline: "Kael-AI dünyasını keşfetmek isteyenler için",
     monthlyPriceTry: 0,
     yearlyPriceTry: 0,
-    monthlyTokens: 500,
+    monthlyTokens: 100,
     badge: "🌱 Ücretsiz",
     features: [
-      "Başlangıçta 500 🪙 Kael Token Hediye",
+      "Başlangıçta 100 🪙 Kael Token Hediye",
       "Standart AI Rol Yapma Modelleri",
       "14 Neural Karakter Sesi Önizleme",
       "Çoklu AI Grup Odalarına Katılım",
