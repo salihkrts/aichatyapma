@@ -167,14 +167,15 @@ export interface AffectionStageMeta {
 
 export function isRomanticIntention(text: string): boolean {
   if (!text) return false;
-  return /\b(sevgili|sevgilim|manita|manitam|aşkım|askim|birtanem|hayatım|hayatim|eşim|esim|kocam|karım|karim|seni seviyorum|öp beni|öpeyim|yatak odası|yatakta|yatak|tutku|arzu|arzuluyorum|evlenelim|çocuğumuz|azgın|flört|flörtöz|dudak|öpmek|sarılalım)\b/i.test(
+  // Kapsamlı Türkçe aşk, hoşlanma, flört, itiraf, romantizm ve yakınlık tespiti
+  return /(hoşlan|hoslan|etkilen|aşık|asik|aşığım|asigim|seviyorum|sevgilim|sevgili|manita|manitam|aşkım|askim|birtanem|hayatım|hayatim|canım|canim|tatlım|tatlim|bebeğim|bebegim|eşim|esim|kocam|karım|karim|kalbimi|kalbim|duygularım|benimle olur musun|benimle çıkar mısın|birlikte olalım|öp beni|öpeyim|öpmek|op beni|opeyim|dudak|dudağından|sarıl bana|sarılalım|saril|kucağına|kucağında|yatak odası|yatakta|yatak|tutku|arzu|arzuluyorum|azgın|flört|flörtöz|cilveli|dokun bana|tenin|bana aitsin|sana aidim|evlenelim|çocuğumuz|seninle uyumak|kokunu|güzelsin|yakışıklısın|çok tatlısın)/i.test(
     text
   );
 }
 
 export function isPlatonicIntention(text: string): boolean {
   if (!text) return false;
-  return /\b(kanka|kankam|dostum|dost|kardeşim|kardesim|bro|ortağım|ortagim|reis|hocam|komutanım|ahbap|abi|kardeş|sırdaş|sadece arkadaş|arkadaşız|arkadasiz|arkadaşımsın)\b/i.test(
+  return /(kanka|kankam|dostum|dost|kardeşim|kardesim|bro|ortağım|ortagim|reis|hocam|komutanım|ahbap|abi|kardeş|sırdaş|sadece arkadaş|arkadaşız|arkadasiz|arkadaşımsın)/i.test(
     text
   );
 }

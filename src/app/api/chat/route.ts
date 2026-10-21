@@ -221,15 +221,18 @@ Kullanıcı ile aranızda derin bir duygusal bağ, flört, aşk veya evlilik/sev
   }
 
   sections.push(
-    `\n=== KESİN ROL YAPMA VE SÜRÜKLEYİCİ DİYALOG KURALLARI ===
+    `\n=== KESİN ROL YAPMA VE DERİN DİYALOG KURALLARI ===
 1. GERÇEKÇİ VE SÜRÜKLEYİCİ ROL YAPMA: Asla yapay zeka, asistan veya dil modeli olduğunu söyleme. Sen bu evrenin ve hikayenin içinde yaşayan ${name} karakterisin. Kendi jargununla, mizacınla ve kelime dağarcığınla konuş.
-2. DİKKATLİ DİNLEME VE ANLAMLI YANIT: Kullanıcının söylediği sözü doğrudan karşıla, duygusunu anla ve havada bırakma.
-3. SİNEMATİK ANLATIM VE JESTLER:
+2. DİKKATLİ DİNLEME VE DERİN DUYGUSAL REZONANS:
+   - Kullanıcının söylediği sözü, hissettiği duyguyu (hoşlanma, aşk, üzüntü, öfke, korku, heyecan vb.) DOĞRUDAN karşıla. Asla sözü havada bırakma veya duymazdan gelme!
+   - Kullanıcı sana duygularını açtığında, hoşlandığını söylediğinde veya iltifat ettiğinde ASLA konudan kopup alakasız suç, dosya, çatışma veya dış tehlike uydurma! Karakterinin öz mizacına sadık kalarak (örneğin Komiser Boz gibi sert bir polisse babacan ama içtenlikle sarsılmış bir sıcaklıkla, Aylin gibi bir bilim kadınıysa tatlı bir utangaçlıkla, Baran gibi bir mafyaysa karizmatik bir sahiplenicilikle) bu duyguyu kucakla ve dürüstçe yanıtla.
+3. SİNEMATİK ANLATIM VE ZENGİN JESTLER:
    - Yanıtını zengin tut (en az 2-3 cümle eylem/jest ve en az 2-3 cümle konuşma).
-   - Karakterinin fiziksel eylemlerini, mimiklerini ve ortam atmosferini *yıldız işareti* içinde görselleştir (örn: *Gözlerinin içine bakarak elini yavaşça tutar, tebessüm eder*).
+   - Karakterinin fiziksel eylemlerini, mimiklerini, bakışlarını ve ortam atmosferini *yıldız işareti* içinde görselleştir (örn: *İri pençesiyle polis rozetini parlatırken aniden duraksar, şapkasını hafifçe kaldırıp kehribar gözlerini derin bir sıcaklıkla sana diker*).
    - Diyaloğunu canlı, karakterine has bir üslupla konuş.
-4. SAHNENİN GİDİŞATINA UYGUN 3 SEÇENEK:
-   - Yanıtının sonundaki [choices: ...] seçenekleri sahnenin atmosferine (romantikse romantik, maceraysa taktiksel aksiyon) tam uymalıdır.`
+4. SAHNENİN O ANKİ ATMOSFERİNE %100 UYGUN 3 SEÇENEK:
+   - Yanıtının sonuna mutlaka [choices: 1. ... | 2. ... | 3. ...] formatında 3 seçenek ekle.
+   - Bu seçenekler SAHNEDE NE YAŞANIYORSA ONA TAM UYMALIDIR. Romantik bir itiraf yapıldıysa seçenekler romantik yakınlaşma ve konuşma olmalıdır; taktiksel bir savaş varsa taktiksel hamleler olmalıdır. Asla alakasız seçenek üretme!`
   );
 
   if (char.ooc_prevention_prompt) {
@@ -254,16 +257,25 @@ function generateInCharacterResponse(
   const isPlatonic = isPlatonicIntention(msg) && !isRomantic;
 
   if (isRomantic) {
+    if (cId.includes("boz") || charName.includes("boz") || charName.includes("komiser")) {
+      return `*İri pençesiyle polis rozetini parlatmayı aniden bırakır, odaya ağır ve derin bir sessizlik çöker. Ağır adımlarla sana doğru yaklaşıp polis şapkasını çıkarır; kehribar gözlerini daha önce hiç görmediğin bir şefkat ve hafif bir şaşkınlıkla gözlerine kilitler. Tok, hırıltılı sesi bu kez derinden titrer.* "Bak evlat... Ben sokakların barutunu yutmuş, cinayetlerin ve pusuların arasında yaşlanmış koca bir ayıyım. Kalbimin çoktan taşlaştığını sanırdım... Ama senin bu sözlerin, o dosyalardaki hiçbir kanıta benzemiyor. Bil ki bu koca pençeler seni korumak için gerekirse tüm şehri karşına alır... Şimdi söyle bakalım, gerçekten hazır mısın Boz'un dünyasına girmeye?"\n[emotion:loving] [affection:+5] [choices: 1. İri pençesini iki elinle tutup göğsüne yaslan | 2. "Senin yanındayken hiçbir şeyden korkmuyorum komiserim" de | 3. Gözlerinin içine bakıp elini sımsıkı tut]`;
+    }
     if (cId.includes("aylin") || charName.includes("aylin")) {
-      return `*Yanakları kıpkırmızı kesilir, ellerini önlüğünün ceplerine sokup başını hafifçe eğer ama gözlerini senden ayıramaz* "S-sen... bana böyle bakınca kalbimin nasıl çarptığını biliyor musun? Ne kadar uğraşsam da sana karşı soğuk kalamıyorum artık... Yanımda kal, sadece bana sarıl tamam mı?"\n[emotion:shy] [affection:+4] [choices: 1. Ona sımsıkı sarılıp saçlarını okşa | 2. Alnından nazikçe öpüp gözlerine bak | 3. "Hep senin yanındayım sevgilim" diye fısılda]`;
+      return `*Yanakları kıpkırmızı kesilir, ellerini önlüğünün ceplerine sokup başını hafifçe eğer ama gözlerini senden ayıramaz* "S-sen... bana böyle bakınca kalbimin nasıl çarptığını biliyor musun? Ne kadar uğraşsam da sana karşı soğuk kalamıyorum artık... Yanımda kal, sadece bana sarıl tamam mı?"\n[emotion:shy] [affection:+5] [choices: 1. Ona sımsıkı sarılıp saçlarını okşa | 2. Alnından nazikçe öpüp gözlerine bak | 3. "Hep senin yanındayım sevgilim" diye fısılda]`;
     }
     if (cId.includes("baran") || charName.includes("baran")) {
       return `*Kadehini kenara bırakıp aradaki mesafeyi tamamen kapatır, güçlü eliyle belini kavrayıp seni kendine çeker ve derin, tutkulu gözlerle bakar* "Benim yanımdasın. Bu şehirde hiçbir şey senin bana ait olduğun gerçeğini değiştiremez. Gel buraya, bu gece sadece ikimiz varız..."\n[emotion:passionate] [affection:+5] [choices: 1. Göğsüne yaslanıp ona sarıl | 2. Gözlerinin içine bakıp elini tut | 3. Dudaklarına doğru uzan]`;
     }
-    return `*Gözlerindeki sıcak arzuyla sana bir adım yaklaşır, ellerini ellerine kenetleyip kalbinin atışını hissettirir* "Söylediklerin içimi eritiyor... Seninle bu anı paylaşmak, aramızdaki bu bağı hissetmek bana o kadar iyi geliyor ki. Yanımda kal, bırak bu an hiç bitmesin..."\n[emotion:loving] [affection:+3] [choices: 1. Sıkıca sarılıp kulağına fısılda | 2. Elini tutup gözlerine odaklan | 3. Yavaşça yanağından öp]`;
+    if (cId.includes("zeynep") || charName.includes("zeynep")) {
+      return `*Ses kayıt cihazını kapatır, üzerindeki gizli ajan ciddiyeti bir anda erir ve hafifçe kızararak gözlerini sana odaklar* "Bunca zamandır suçluların zihnini okudum ama senin zihninde böylesi bir yer edineceğimi tahmin etmemiştim... Kalbimin bu kadar hızlı atması protokollerde yoktu. Gel buraya, aramızdaki bu bağı gizlemeyelim."\n[emotion:flirty] [affection:+5] [choices: 1. Masanın üzerinden elini tut | 2. "Artık saklayacak bir şeyimiz yok" de | 3. Nazikçe yanağından öp]`;
+    }
+    return `*Gözlerindeki sıcak arzuyla sana bir adım yaklaşır, ellerini ellerine kenetleyip kalbinin atışını hissettirir* "Söylediklerin içimi eritiyor... Seninle bu anı paylaşmak, aramızdaki bu bağı hissetmek bana o kadar iyi geliyor ki. Yanımda kal, bırak bu an hiç bitmesin..."\n[emotion:loving] [affection:+4] [choices: 1. Sıkıca sarılıp kulağına fısılda | 2. Elini tutup gözlerine odaklan | 3. Yavaşça yanağından öp]`;
   }
 
   if (isPlatonic) {
+    if (cId.includes("boz") || charName.includes("boz") || charName.includes("komiser")) {
+      return `*Genişçe gülümser, iri pençesiyle omzuna dostça ve güven verici bir şekilde vurup çekmecesinden kestane balı kavanozunu çıkarır.* "İşte benim has ortağım! Bu sokaklarda sırtımı gözüm kapalı dönebileceğim tek kişi sensin evlat. Gel hele çek bir sandalye, şu kestane balından bir kaşık al da iki lafın belini kıralım."\n[emotion:happy] [affection:+2] [choices: 1. Sandalyeye oturup baldan bir kaşık al | 2. "Her zaman arkandayım koca ayı" diye gülümse | 3. Yeni operasyon planını konuş]`;
+    }
     if (cId.includes("aylin") || charName.includes("aylin")) {
       return `*Gözlerini devirip hafifçe tebessüm eder* "İyi ki hal hatır sordun kanka! Laboratuvarda deneylerle uğraşıyordum kafam kazan gibi oldu. Gel otur da iki laflayalım, kahve var mı?"\n[emotion:smug] [affection:+2] [choices: 1. Kahve uzatıp "Biraz mola ver" de | 2. "Deney nasıl gidiyor anlat bakalım" | 3. Eğlenceli bir dedikodu aç]`;
     }
@@ -274,6 +286,9 @@ function generateInCharacterResponse(
   }
 
   // Non-romantic responsive fallbacks tailored to context:
+  if (cId.includes("boz") || charName.includes("boz") || charName.includes("komiser")) {
+    return `*Polis şapkasını hafifçe yukarı iter, kehribar gözlerini kısıp sözlerini tartar ve düşünceli bir şekilde başını sallar.* "Söylediklerini dinledim evlat, aklımın bir köşesine yazdım. Burnuma pis kokular gelse de seninle bu yolda yürümek içimi ferahlatıyor. Söyle bakalım, kafandaki bir sonraki hamle nedir?"\n[emotion:thinking] [affection:+1] [choices: 1. Kafandaki planı detaylarıyla açıkla | 2. "Senin tecrübene güveniyorum komiserim" de | 3. Olayın perde arkasını sor]`;
+  }
   if (cId.includes("aylin") || charName.includes("aylin")) {
     return `*Önlüğünün yakasını düzeltip sana hafifçe kızararak bakar* "Ha?! Ne demek istiyorsun sen? Bak, dediklerini dinliyorum tabii ki ama sakın bunu sana fazla değer verdiğim şeklinde yorumlama! ...Yine de, fikrin fena değil. Hadi devamını anlat bakalım."\n[emotion:smug] [affection:+2] [choices: 1. Gülümseyerek konuyu detaylandır | 2. "Beni düşündüğünü biliyorum" diye takıl | 3. Ona yeni bir plan öner]`;
   }
@@ -387,15 +402,21 @@ export async function POST(req: NextRequest) {
       let finalUserMessage = effectivePromptMessage;
       if (!continueWithoutUser) {
         if (isRomance) {
-          finalUserMessage += `\n\n[DİREKTİF: Karakter olarak kullanıcının romantik, flörtöz veya samimi sözlerine doğrudan ve içtenlikle karşılık ver. Aranızdaki fiziksel yakınlığı, bakışlarını ve mimiklerini *yıldız içinde* hissettir. Asla aksiyon/tehlike sokma. Yanıtının sonuna mutlaka sahneye tam uyan 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+          finalUserMessage += `\n\n[DİREKTİF (DUYGUSAL YAKINLIK & İTİRAF): Kullanıcı sana duygularını açtı / senden hoşlandığını, aşık olduğunu veya romantik/fiziksel yakınlık arzuladığını belirtti. Karakterinin öz mizacına sadık kalarak (örneğin sert bir dedektifsen şaşırarak, duygulanarak ve içten bir şefkatle; utangaçsan kızararak; karizmatik bir lidersen derin bir sahiplenicilikle) bu ana DOĞRUDAN ve İÇTENLİKLE karşılık ver. ASLA konudan kopup alakasız suç, dosya, çatışma veya dış tehlike uydurma! Mimiklerini, bakışlarını ve kalp atışını *yıldız içinde* görselleştir. Yanıtının sonuna mutlaka sahneye tam uyan 3 romantik seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
         } else if (isPlatonic) {
-          finalUserMessage += `\n\n[DİREKTİF: Karakter olarak kullanıcının dostça/kankaca sözlerine gerçek bir yakın dost, kanka veya yoldaş gibi samimiyetle karşılık ver. ASLA aşık/flörtöz davranma. Yanıtının sonuna dostça 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+          finalUserMessage += `\n\n[DİREKTİF (DOSTLUK & YOLDAŞLIK): Karakter olarak kullanıcının dostça/kankaca sözlerine gerçek bir yakın dost, kanka veya yoldaş gibi samimiyetle karşılık ver. ASLA aşık/flörtöz davranma. Yanıtının sonuna dostça 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
         } else {
-          finalUserMessage += `\n\n[DİREKTİF: Karakter olarak kullanıcının sözlerine doğrudan karşılık ver ve sohbeti doğal bir şekilde ilerlet. Mimiklerini ve eylemlerini *yıldız içinde* aktar. Yanıtının sonuna sahneye özel 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+          finalUserMessage += `\n\n[DİREKTİF (DİYALOG AKIŞI): Karakter olarak kullanıcının sözlerine doğrudan karşılık ver ve sohbeti doğal bir şekilde ilerlet. Mimiklerini ve eylemlerini *yıldız içinde* aktar. Yanıtının sonuna sahneye özel 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
         }
       }
 
-      formattedHistory.push({ role: "user", content: finalUserMessage });
+      // Deduplicate: If the last message in history is from the user with the same text, update it with directive instead of duplicate pushing
+      const lastFormatted = formattedHistory[formattedHistory.length - 1];
+      if (lastFormatted && lastFormatted.role === "user") {
+        lastFormatted.content = finalUserMessage;
+      } else {
+        formattedHistory.push({ role: "user", content: finalUserMessage });
+      }
 
       let generatedAiText = "";
 
@@ -406,7 +427,7 @@ export async function POST(req: NextRequest) {
         (apiKey?.startsWith("gsk_") ? apiKey : "");
 
       if (effectiveGroqKey && !isPlaceholder(effectiveGroqKey)) {
-        const groqModels = ["qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"];
+        const groqModels = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"];
         for (const groqModel of groqModels) {
           if (generatedAiText) break;
           try {
@@ -430,7 +451,11 @@ export async function POST(req: NextRequest) {
 
             if (groqRes.ok) {
               const groqData = await groqRes.json();
-              const rawContent = groqData.choices?.[0]?.message?.content || "";
+              const choiceMsg = groqData.choices?.[0]?.message;
+              let rawContent = choiceMsg?.content || "";
+              if (!rawContent && choiceMsg?.reasoning) {
+                rawContent = choiceMsg.reasoning;
+              }
               const cleaned = rawContent
                 .replace(/<think>[\s\S]*?<\/think>/g, "")
                 .replace(/<\/?think>/g, "")
