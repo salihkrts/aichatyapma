@@ -26,6 +26,8 @@ import {
   Menu,
   X,
   LogIn,
+  LogOut,
+  RefreshCw,
   Coins,
   Crown,
   ShoppingBag,
@@ -161,6 +163,25 @@ function UnifiedAppContent() {
     const ensured = ensureSessionUserInPlatform(kaelSession);
     setCurrentUserEconomy(ensured);
     setActiveTab("admin");
+  };
+
+  const handleLogout = () => {
+    const guestSession = createInitialGuestSession();
+    setAuthSession(guestSession);
+    try {
+      localStorage.setItem("kael_auth_session", JSON.stringify(guestSession));
+    } catch {
+      // ignore
+    }
+    const ensured = ensureSessionUserInPlatform(guestSession);
+    setCurrentUserEconomy(ensured);
+    if (activeTab === "admin") {
+      setActiveTab("explore");
+    }
+    setIsRightMenuOpen(false);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("kael_economy_updated"));
+    }
   };
 
   const loadSavedCharacters = useCallback(() => {
@@ -638,17 +659,29 @@ function UnifiedAppContent() {
                   className="absolute right-0 top-12 w-76 rounded-2xl border border-purple-500/40 bg-neutral-900/95 backdrop-blur-2xl p-3 shadow-2xl z-50 space-y-1.5"
                 >
                   <div className="px-2.5 py-2 rounded-xl bg-white/[0.03] border border-white/10 mb-2">
-                    <div className="text-xs font-extrabold text-white flex items-center justify-between">
-                      <span>{authSession.displayName}</span>
-                      <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 text-[9px]">
-                        {isViewerAdmin
-                          ? "👑 Kurucu Admin"
-                          : authSession.isGuest
-                          ? "Misafir (SFW)"
-                          : authSession.isAdult
-                          ? "18+ Üye"
-                          : "SFW Mod"}
-                      </Badge>
+                    <div className="text-xs font-extrabold text-white flex items-center justify-between gap-1">
+                      <span className="truncate max-w-[140px]">{authSession.displayName}</span>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 text-[9px]">
+                          {isViewerAdmin
+                            ? "👑 Kurucu Admin"
+                            : authSession.isGuest
+                            ? "Misafir (SFW)"
+                            : authSession.isAdult
+                            ? "18+ Üye"
+                            : "SFW Mod"}
+                        </Badge>
+                        {!authSession.isGuest && (
+                          <button
+                            type="button"
+                            onClick={handleLogout}
+                            title="Çıkış Yap (Misafir Moduna Dön)"
+                            className="p-1 rounded-md bg-rose-500/10 hover:bg-rose-500/25 text-rose-300 hover:text-rose-100 transition border border-rose-500/20 cursor-pointer"
+                          >
+                            <LogOut className="size-3" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <div className="text-[11px] text-amber-300 font-bold mt-1 flex items-center justify-between">
                       <span>🪙 Bakiye: {currentUserEconomy.tokens.toLocaleString("tr-TR")} Token</span>
@@ -662,7 +695,7 @@ function UnifiedAppContent() {
                   </div>
 
                   {/* Admin Quick Entry (YALNIZCA YETKİLİ ADMİNLERDE GÖRÜNÜR) */}
-                  {isViewerAdmin ? (
+                  {isViewerAdmin && (
                     <button
                       type="button"
                       onClick={() => {
@@ -679,24 +712,7 @@ function UnifiedAppContent() {
                         </div>
                       </div>
                     </button>
-                  ) : authSession.isGuest ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsRightMenuOpen(false);
-                        setIsOnboardingOpen(true);
-                      }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/40 text-xs font-bold text-purple-200 transition cursor-pointer text-left"
-                    >
-                      <Sparkles className="size-4 text-purple-400 shrink-0" />
-                      <div>
-                        <div>✨ Ücretsiz Hesap Aç / Giriş Yap</div>
-                        <div className="text-[10px] text-purple-300/80">
-                          100 deneme jetonunu kaybetme, sınırsız konuş
-                        </div>
-                      </div>
-                    </button>
-                  ) : null}
+                  )}
 
                   {/* Avatar & Profile Studio */}
                   <button
@@ -730,23 +746,6 @@ function UnifiedAppContent() {
                       <div>💎 Token Mağazası & VIP Fiyatlandırma</div>
                       <div className="text-[10px] text-neutral-400">
                         Token paketleri, VIP üyelik, aşk hediyeleri & RPG eşyaları
-                      </div>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsRightMenuOpen(false);
-                      setIsOnboardingOpen(true);
-                    }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-purple-600/25 text-xs font-semibold text-neutral-100 transition cursor-pointer text-left"
-                  >
-                    <LogIn className="size-4 text-emerald-400 shrink-0" />
-                    <div>
-                      <div>Giriş Yap / Kayıt Ol (@kael Hesap Değiştir)</div>
-                      <div className="text-[10px] text-neutral-400">
-                        Kullanıcı adı & şifre ile giriş veya Persona seçimi
                       </div>
                     </div>
                   </button>
@@ -796,6 +795,61 @@ function UnifiedAppContent() {
                     <Plus className="size-4 text-purple-300 shrink-0" />
                     <span>Yeni AI Karakter Oluştur (Atölye)</span>
                   </button>
+
+                  {/* Auth Actions: Giriş / Değiştir / Çıkış Bölümü */}
+                  <div className="pt-2 mt-1 border-t border-white/10 space-y-1.5">
+                    {authSession.isGuest ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsRightMenuOpen(false);
+                          setIsOnboardingOpen(true);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-purple-600/25 hover:bg-purple-600/40 border border-purple-500/40 text-xs font-bold text-purple-200 transition cursor-pointer text-left"
+                      >
+                        <LogIn className="size-4 text-purple-400 shrink-0" />
+                        <div>
+                          <div>✨ Giriş Yap / Hesap Aç</div>
+                          <div className="text-[10px] text-purple-300/80">
+                            100 deneme jetonunu kaybetme, sınırsız konuş
+                          </div>
+                        </div>
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsRightMenuOpen(false);
+                            setIsOnboardingOpen(true);
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-purple-600/25 text-xs font-semibold text-neutral-200 transition cursor-pointer text-left"
+                        >
+                          <RefreshCw className="size-4 text-purple-400 shrink-0" />
+                          <div>
+                            <div>🔄 Hesap Değiştir / Persona Seç</div>
+                            <div className="text-[10px] text-neutral-400">
+                              Farklı hesaba geç veya yeni persona ayarla
+                            </div>
+                          </div>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-xs font-bold text-rose-200 transition cursor-pointer text-left"
+                        >
+                          <LogOut className="size-4 text-rose-400 shrink-0" />
+                          <div>
+                            <div>🚪 Çıkış Yap (@{authSession.username})</div>
+                            <div className="text-[10px] text-rose-300/80">
+                              Hesaptan güvenle çıkış yap, misafir moduna geç
+                            </div>
+                          </div>
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -1196,6 +1250,7 @@ function UnifiedAppContent() {
               onAddBotToGroup={() => setActiveTab("groups")}
               onToggleBotPublic={handleToggleBotPublicById}
               onOpenOnboarding={() => setIsOnboardingOpen(true)}
+              onLogout={handleLogout}
             />
           </div>
         )}

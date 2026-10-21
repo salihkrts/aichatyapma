@@ -23,6 +23,7 @@ import {
   Edit3,
   Eye,
   Unlock,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,6 +50,7 @@ interface UserProfileProps {
   onAddBotToGroup?: (botId: string) => void;
   onToggleBotPublic?: (botId: string) => void;
   onOpenOnboarding?: () => void;
+  onLogout?: () => void;
 }
 
 const COVER_PRESETS = [
@@ -129,6 +131,7 @@ export function UserProfile({
   onAddBotToGroup,
   onToggleBotPublic,
   onOpenOnboarding,
+  onLogout,
 }: UserProfileProps) {
   const [activeTab, setActiveTab] = useState<
     "published" | "private" | "friends" | "blocked"
@@ -522,6 +525,18 @@ export function UserProfile({
                   <Edit3 className="size-3.5 mr-1.5" />
                   {isEditingProfile ? "Düzenlemeyi Kapat" : "Profili Özelleştir"}
                 </Button>
+
+                {!session.isGuest && onLogout && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={onLogout}
+                    className="border-rose-500/40 bg-rose-950/30 hover:bg-rose-900/50 text-rose-200 text-xs rounded-xl"
+                  >
+                    <LogOut className="size-3.5 mr-1.5 text-rose-400" />
+                    Çıkış Yap
+                  </Button>
+                )}
               </>
             )}
           </div>
