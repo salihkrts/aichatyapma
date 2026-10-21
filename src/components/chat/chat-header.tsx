@@ -378,6 +378,20 @@ export function ChatHeader({
                   )}
                 </div>
               )}
+
+              {/* Reset Chat Option inside Memory Sheet */}
+              {onResetChat && (
+                <div className="pt-2 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={onResetChat}
+                    className="w-full py-2.5 px-3 rounded-xl bg-red-950/20 hover:bg-red-950/40 border border-red-500/30 text-red-300 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
+                  >
+                    <RotateCcw className="size-3.5" />
+                    <span>Sohbeti Baştan Başlat</span>
+                  </button>
+                </div>
+              )}
             </div>
           </SheetContent>
         </Sheet>
@@ -388,11 +402,11 @@ export function ChatHeader({
             type="button"
             size="sm"
             onClick={onStartVoiceCall}
-            className="h-8 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/25 cursor-pointer transition"
+            className="h-8 px-2.5 sm:px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/25 cursor-pointer transition"
             title="Karakteri Telefonla Sesli Ara & Konuş"
           >
             <PhoneCall className="size-3.5 animate-pulse" />
-            <span>Sesli Ara</span>
+            <span className="hidden sm:inline">Sesli Ara</span>
           </Button>
         )}
 
@@ -642,7 +656,7 @@ export function ChatHeader({
             size="icon"
             onClick={onResetChat}
             title="Sohbeti Baştan Başlat"
-            className="size-8 text-neutral-400 hover:text-white rounded-lg"
+            className="size-8 text-neutral-400 hover:text-white rounded-lg hidden sm:inline-flex"
           >
             <RotateCcw className="size-4" />
           </Button>
@@ -682,39 +696,41 @@ export function ChatHeader({
           )}
         </Button>
 
-        {/* Quick Info Icon */}
-        <Sheet>
-          <SheetTrigger
-            className="size-8 inline-flex items-center justify-center rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
-            title="Karakter Kimliği"
-          >
-            <Info className="size-4" />
-          </SheetTrigger>
-          <SheetContent className="bg-neutral-900 border-white/10 text-white w-full sm:max-w-md overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle className="text-base font-bold text-white">
-                {character.name} — Karakter Kimliği
-              </SheetTitle>
-              <SheetDescription className="text-xs text-neutral-400">
-                {character.tagline}
-              </SheetDescription>
-            </SheetHeader>
-            <div className="mt-4 space-y-4 text-xs text-neutral-300">
-              {character.description && (
-                <div className="p-3 rounded-lg bg-white/[0.03] border border-white/5">
-                  <p className="font-semibold text-white mb-1">Tanım:</p>
-                  <p>{character.description}</p>
-                </div>
-              )}
-              {character.system_prompt && (
-                <div className="p-3 rounded-lg bg-white/[0.03] border border-white/5">
-                  <p className="font-semibold text-purple-300 mb-1">Karakter Yönergesi (System Prompt):</p>
-                  <p className="whitespace-pre-line">{character.system_prompt}</p>
-                </div>
-              )}
-            </div>
-          </SheetContent>
-        </Sheet>
+        {/* Quick Info Icon (Desktop) */}
+        <div className="hidden sm:inline-flex">
+          <Sheet>
+            <SheetTrigger
+              className="size-8 inline-flex items-center justify-center rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+              title="Karakter Kimliği"
+            >
+              <Info className="size-4" />
+            </SheetTrigger>
+            <SheetContent className="bg-neutral-900 border-white/10 text-white w-full sm:max-w-md overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle className="text-base font-bold text-white">
+                  {character.name} — Karakter Kimliği
+                </SheetTitle>
+                <SheetDescription className="text-xs text-neutral-400">
+                  {character.tagline}
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-4 space-y-4 text-xs text-neutral-300">
+                {character.description && (
+                  <div className="p-3 rounded-lg bg-white/[0.03] border border-white/5">
+                    <p className="font-semibold text-white mb-1">Tanım:</p>
+                    <p>{character.description}</p>
+                  </div>
+                )}
+                {character.system_prompt && (
+                  <div className="p-3 rounded-lg bg-white/[0.03] border border-white/5">
+                    <p className="font-semibold text-purple-300 mb-1">Karakter Yönergesi (System Prompt):</p>
+                    <p className="whitespace-pre-line">{character.system_prompt}</p>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );

@@ -1127,18 +1127,17 @@ export function ChatView({
           </div>
         </div>
 
-        {/* Bot Control Strip: Continue Speaking / Delete & Regenerate Last Bot Message */}
+        {/* Bot Control Strip: Continue Speaking / Delete & Regenerate Last Bot Message (Desktop only to keep mobile 100% clean) */}
         {character && !isLoading && (
-          <div className="max-w-3xl w-full mx-auto px-3 pt-1 flex items-center justify-center gap-1.5 z-20">
+          <div className="hidden sm:flex max-w-3xl w-full mx-auto px-3 pt-1 items-center justify-center gap-1.5 z-20">
             <button
               type="button"
               onClick={() => handleBotContinueSpeaking()}
-              className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-purple-600/20 hover:bg-purple-600/35 border border-purple-500/40 text-purple-200 text-[11px] sm:text-xs font-semibold shadow-sm transition active:scale-95 cursor-pointer whitespace-nowrap"
+              className="flex items-center gap-1 px-3 py-1 rounded-full bg-purple-600/20 hover:bg-purple-600/35 border border-purple-500/40 text-purple-200 text-xs font-semibold shadow-sm transition active:scale-95 cursor-pointer whitespace-nowrap"
               title="Sen hiçbir şey yazmadan bot konuşmaya devam etsin"
             >
               <span>▶️</span>
-              <span className="hidden sm:inline">Sen Yazmadan {character.name.split(" ")[0]} Konuşsun</span>
-              <span className="sm:hidden">Devam Ettir</span>
+              <span>Sen Yazmadan {character.name.split(" ")[0]} Konuşsun</span>
             </button>
 
             {lastMessage && lastMessage.role === "assistant" && (
@@ -1146,22 +1145,20 @@ export function ChatView({
                 <button
                   type="button"
                   onClick={() => handleRegenerate(lastMessage.id)}
-                  className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-white/[0.04] hover:bg-white/10 border border-white/10 text-neutral-300 hover:text-white text-[11px] sm:text-xs transition active:scale-95 cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/[0.04] hover:bg-white/10 border border-white/10 text-neutral-300 hover:text-white text-xs transition active:scale-95 cursor-pointer whitespace-nowrap"
                   title="Botun son mesajını sil ve yeni bir cevap üret"
                 >
                   <span>🔄</span>
-                  <span className="hidden sm:inline">Son Mesajı Yeniden Yazdır</span>
-                  <span className="sm:hidden">Yenile</span>
+                  <span>Son Mesajı Yeniden Yazdır</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDeleteMessage(lastMessage.id)}
-                  className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-red-950/30 hover:bg-red-900/40 border border-red-500/30 text-red-300 text-[11px] sm:text-xs transition active:scale-95 cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-1 px-3 py-1 rounded-full bg-red-950/30 hover:bg-red-900/40 border border-red-500/30 text-red-300 text-xs transition active:scale-95 cursor-pointer whitespace-nowrap"
                   title="Botun son mesajını sil"
                 >
                   <span>🗑️</span>
-                  <span className="hidden sm:inline">Son Mesajı Sil</span>
-                  <span className="sm:hidden">Sil</span>
+                  <span>Son Mesajı Sil</span>
                 </button>
               </>
             )}

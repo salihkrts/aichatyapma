@@ -254,10 +254,10 @@ export function ChatInputBar({
   };
 
   return (
-    <div className="relative p-3 sm:p-4 bg-gradient-to-t from-neutral-950 via-neutral-950/95 to-transparent">
+    <div className="relative p-2.5 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))] bg-gradient-to-t from-neutral-950 via-neutral-950/95 to-transparent">
       {/* Suggestions Chips Bar */}
       {suggestions.length > 0 && (
-        <div className="max-w-4xl mx-auto mb-2.5 overflow-x-auto no-scrollbar flex items-center gap-1.5 py-1">
+        <div className="max-w-4xl mx-auto mb-2 overflow-x-auto no-scrollbar flex items-center gap-1.5 py-0.5">
           <div className="flex items-center gap-1.5 flex-nowrap shrink-0">
             {suggestions.map((suggestion, idx) => (
               <button
@@ -265,7 +265,7 @@ export function ChatInputBar({
                 type="button"
                 disabled={isLoading}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium bg-neutral-900/80 hover:bg-purple-950/40 border border-white/10 hover:border-purple-500/40 text-neutral-300 hover:text-purple-200 transition-all shadow-sm active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-medium bg-neutral-900/80 hover:bg-purple-950/40 border border-white/10 hover:border-purple-500/40 text-neutral-300 hover:text-purple-200 transition-all shadow-sm active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap"
               >
                 <span>{suggestion}</span>
               </button>

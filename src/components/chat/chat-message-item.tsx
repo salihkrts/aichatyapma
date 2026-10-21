@@ -482,7 +482,8 @@ export function ChatMessageItem({
               className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white/[0.04] hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-neutral-300 hover:text-purple-200 transition cursor-pointer"
             >
               <RotateCw className="size-3" />
-              <span>Yeniden Yaz</span>
+              <span className="hidden sm:inline">Yeniden Yaz</span>
+              <span className="sm:hidden">Yenile</span>
             </button>
           )}
 
@@ -494,7 +495,8 @@ export function ChatMessageItem({
               className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-purple-600/20 hover:bg-purple-600/35 border border-purple-500/40 text-purple-200 font-medium transition cursor-pointer"
             >
               <Play className="size-3 fill-current" />
-              <span>Tekrar Konuşsun / Devam Etsin</span>
+              <span className="hidden sm:inline">Tekrar Konuşsun / Devam Etsin</span>
+              <span className="sm:hidden">Devam Et</span>
             </button>
           )}
 

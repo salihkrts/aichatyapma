@@ -577,12 +577,12 @@ export function RpgSimulationBar({
             <span className="hidden sm:inline">🎲 D20 Zar</span>
           </button>
 
-          {/* Quick Action 2: Anı Resmet */}
+          {/* Quick Action 2: Anı Resmet (Desktop quick button, also inside ☰ Tools) */}
           <button
             type="button"
             disabled={isGeneratingSnapshot}
             onClick={handleGenerateSceneSnapshot}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-xl text-[11px] font-bold bg-pink-600/20 hover:bg-pink-600/35 border border-pink-500/40 text-pink-200 whitespace-nowrap transition cursor-pointer disabled:opacity-50"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-pink-600/20 hover:bg-pink-600/35 border border-pink-500/40 text-pink-200 whitespace-nowrap transition cursor-pointer disabled:opacity-50"
             title="Son konuşulan sahneyi canlı resmet!"
           >
             {isGeneratingSnapshot ? (
@@ -590,7 +590,7 @@ export function RpgSimulationBar({
             ) : (
               <Camera className="size-3.5 text-pink-400" />
             )}
-            <span className="hidden sm:inline">{isGeneratingSnapshot ? "Çiziliyor..." : "📸 Anı Resmet"}</span>
+            <span>{isGeneratingSnapshot ? "Çiziliyor..." : "📸 Anı Resmet"}</span>
           </button>
 
           {/* 3-Line (☰) RPG & Araçlar Menu Button */}
