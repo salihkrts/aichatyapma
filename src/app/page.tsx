@@ -481,8 +481,8 @@ function UnifiedAppContent() {
             </div>
           </div>
 
-          {/* Center: Clean Icon + Short Label Navigation Rail (No Clipping!) */}
-          <nav className="flex items-center gap-1 p-1 rounded-2xl bg-neutral-900/90 border border-white/10 shadow-inner">
+          {/* Center: Clean Icon + Short Label Navigation Rail (Desktop Only - Mobile uses Bottom Nav) */}
+          <nav className="hidden md:flex items-center gap-1 p-1 rounded-2xl bg-neutral-900/90 border border-white/10 shadow-inner">
             <button
               onClick={() => setActiveTab("explore")}
               title={`Keşfet (${allExploreCharacters.length} Karakter)`}
@@ -597,7 +597,7 @@ function UnifiedAppContent() {
             <button
               type="button"
               onClick={() => setIsQuestsModalOpen(true)}
-              className="size-9 rounded-xl border border-orange-500/40 bg-orange-950/30 hover:bg-orange-900/50 text-orange-300 flex items-center justify-center transition cursor-pointer"
+              className="size-9 rounded-xl border border-orange-500/40 bg-orange-950/30 hover:bg-orange-900/50 text-orange-300 hidden sm:flex items-center justify-center transition cursor-pointer"
               title="Günlük Seri & Görevler"
             >
               <Flame className="size-4 fill-current" />
@@ -607,7 +607,7 @@ function UnifiedAppContent() {
             <button
               type="button"
               onClick={() => setPingSettingsOpen(true)}
-              className="size-9 rounded-xl border border-white/10 bg-neutral-900/90 hover:bg-purple-950/50 text-purple-300 flex items-center justify-center transition cursor-pointer"
+              className="size-9 rounded-xl border border-white/10 bg-neutral-900/90 hover:bg-purple-950/50 text-purple-300 hidden sm:flex items-center justify-center transition cursor-pointer"
               title="Karakter bildirimleri (kim arayabilir? / test)"
             >
               <Bell className="size-4" />
@@ -655,7 +655,7 @@ function UnifiedAppContent() {
             <button
               type="button"
               onClick={() => setIsBrainModalOpen(true)}
-              className="size-9 rounded-xl border border-white/10 bg-neutral-900/90 hover:bg-purple-950/50 hover:border-purple-500/40 text-pink-400 flex items-center justify-center transition cursor-pointer"
+              className="size-9 rounded-xl border border-white/10 bg-neutral-900/90 hover:bg-purple-950/50 hover:border-purple-500/40 text-pink-400 hidden sm:flex items-center justify-center transition cursor-pointer"
               title="Yapay Zeka Beyin & Model Ayarları"
             >
               <Brain className="size-4" />
@@ -1204,7 +1204,7 @@ function UnifiedAppContent() {
 
         {/* VIEW 2: LIVE CHAT & TIMELINE BRANCHING */}
         {activeTab === "chat" && (
-          <div className="flex-1 w-full flex flex-col">
+          <div className="flex-1 w-full flex flex-col min-w-0 overflow-hidden">
             <ChatView
               initialCharacterId={selectedCharacterId}
               initialChatId={selectedChatId}

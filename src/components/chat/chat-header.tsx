@@ -60,6 +60,7 @@ interface ChatHeaderProps {
   onForkCharacter?: () => void;
   onOpenBrainSettings?: () => void;
   onBack?: () => void;
+  onOpenTimelines?: () => void;
 }
 
 function getAffinityInfo(score: number) {
@@ -89,6 +90,7 @@ export function ChatHeader({
   onResetChat,
   onOpenBrainSettings,
   onBack,
+  onOpenTimelines,
 }: ChatHeaderProps) {
   const [newMemoryInput, setNewMemoryInput] = useState("");
   const [previewingVoiceId, setPreviewingVoiceId] = useState<string | null>(null);
@@ -130,9 +132,19 @@ export function ChatHeader({
             type="button"
             onClick={onBack}
             className="size-9 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 border border-white/10 flex items-center justify-center text-neutral-300 hover:text-white transition cursor-pointer shrink-0"
-            title="Geri Dön"
+            title="Keşfete Geri Dön"
           >
             <ArrowLeft className="size-4" />
+          </button>
+        )}
+        {onOpenTimelines && (
+          <button
+            type="button"
+            onClick={onOpenTimelines}
+            className="md:hidden size-9 rounded-xl bg-purple-600/20 hover:bg-purple-600/35 border border-purple-500/30 flex items-center justify-center text-purple-300 transition cursor-pointer shrink-0"
+            title="Geçmiş Sohbetler & Zaman Çizelgeleri"
+          >
+            <GitBranch className="size-4" />
           </button>
         )}
         <div className="relative shrink-0">

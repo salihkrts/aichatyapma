@@ -238,6 +238,7 @@ export function ChatView({
   const [selectedVoiceId, setSelectedVoiceId] = useState<string>("anime-girl-yuki");
   const [autoSpeak, setAutoSpeak] = useState<boolean>(false);
   const [voiceCallOpen, setVoiceCallOpen] = useState<boolean>(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const [currentUserProfile, setCurrentUserProfile] = useState<{
     avatarUrl?: string;
@@ -1005,7 +1006,7 @@ export function ChatView({
   const lastMessage = messages[messages.length - 1];
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden">
+    <div className="flex h-[calc(100dvh-4rem)] w-full overflow-hidden min-w-0">
       {/* Sidebar: Past Chats & Branch Timelines */}
       <ChatSidebar
         chats={chats}
@@ -1018,11 +1019,13 @@ export function ChatView({
           }
         }}
         onDeleteChat={handleDeleteChat}
+        isOpenMobile={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
       />
 
       {/* Main Chat Area */}
       <main
-        className={`flex-1 flex flex-col h-full relative z-10 min-w-0 transition-colors duration-500 ${activeSceneTheme.bgGradient}`}
+        className={`flex-1 flex flex-col h-full relative z-10 w-full min-w-0 transition-colors duration-500 ${activeSceneTheme.bgGradient}`}
       >
         {/* Ambient Character Atmosphere Glow */}
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_80%_50%_at_50%_-15%,rgba(147,51,234,0.12),transparent_70%)]" />
@@ -1044,6 +1047,7 @@ export function ChatView({
           onForkCharacter={onForgeClick}
           onOpenBrainSettings={() => setBrainModalOpen(true)}
           onBack={onExploreClick}
+          onOpenTimelines={() => setIsMobileSidebarOpen(true)}
         />
 
         {/* RPG & Simülasyon Barı (D20 Zar, Envanter, Sahne Çizdir, Zihin Haritası, Dünya Olayı, Sesli Arama & A4 Sınav PDF) */}
