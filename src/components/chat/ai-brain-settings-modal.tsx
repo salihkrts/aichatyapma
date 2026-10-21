@@ -157,14 +157,14 @@ export function AiBrainSettingsModal({
                 </p>
               </button>
 
-              {/* 2. Groq Cloud (Ultra Hızlı & Bedava Llama 3) */}
+              {/* 2. Groq Cloud (Ultra Hızlı & Bedava Qwen 27B / GPT-OSS) */}
               <button
                 type="button"
                 onClick={() =>
                   setSettings({
                     ...settings,
                     provider: "groq",
-                    model: "llama-3.3-70b-versatile",
+                    model: "qwen/qwen3.8-27b",
                   })
                 }
                 className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden ${
@@ -176,14 +176,14 @@ export function AiBrainSettingsModal({
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1.5 font-bold text-xs text-white">
                     <Zap className="size-3.5 text-amber-400" />
-                    Groq Cloud (Llama 3.3)
+                    Groq Cloud (Qwen 27B)
                   </div>
                   <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 text-[9px]">
                     BEDAVA API
                   </Badge>
                 </div>
                 <p className="text-[11px] text-neutral-400 leading-snug">
-                  Saniyede 300 kelime hızında Meta Llama 3.3 70B modeli. %100 ücretsizdir.
+                  Ultra akıcı Türkçe rol yapma ve saniyede 300 kelime hızı. %100 ücretsizdir.
                 </p>
               </button>
 

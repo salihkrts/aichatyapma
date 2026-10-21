@@ -9,9 +9,15 @@ export type EmotionKey =
   | "angry"
   | "sad"
   | "blushing"
+  | "shy"
   | "shocked"
   | "smug"
-  | "thinking";
+  | "thinking"
+  | "flirty"
+  | "passionate"
+  | "loving"
+  | "cold"
+  | "jealous";
 
 export interface EmotionVisualMeta {
   key: EmotionKey;
@@ -41,8 +47,8 @@ export const EMOTION_MAP: Record<EmotionKey, EmotionVisualMeta> = {
   },
   angry: {
     key: "angry",
-    label: "Öfkeli / Sert",
-    emoji: "😠",
+    label: "Öfkeli / Kızgın",
+    emoji: "💢",
     ringColor: "ring-red-500 shadow-[0_0_18px_rgba(239,68,68,0.55)]",
     badgeClass: "bg-red-500/20 text-red-300 border-red-500/40",
     filterCss: "contrast(1.18) saturate(1.3)",
@@ -50,18 +56,26 @@ export const EMOTION_MAP: Record<EmotionKey, EmotionVisualMeta> = {
   sad: {
     key: "sad",
     label: "Hüzünlü / Kırgın",
-    emoji: "😢",
+    emoji: "💧",
     ringColor: "ring-blue-400 shadow-[0_0_14px_rgba(96,165,250,0.4)]",
     badgeClass: "bg-blue-500/20 text-blue-300 border-blue-500/40",
     filterCss: "saturate(0.75) brightness(0.92)",
   },
   blushing: {
     key: "blushing",
-    label: "Utangaç / Yanakları Kızarmış",
+    label: "Kızarmış / Utangaç",
     emoji: "😳",
     ringColor: "ring-pink-400 shadow-[0_0_18px_rgba(244,114,182,0.55)]",
     badgeClass: "bg-pink-500/20 text-pink-200 border-pink-500/40",
     filterCss: "saturate(1.25) hue-rotate(-6deg)",
+  },
+  shy: {
+    key: "shy",
+    label: "Utangaç / Mahcup",
+    emoji: "🥺",
+    ringColor: "ring-pink-300 shadow-[0_0_18px_rgba(249,168,212,0.6)]",
+    badgeClass: "bg-pink-500/20 text-pink-200 border-pink-400/40",
+    filterCss: "saturate(1.3) hue-rotate(-8deg)",
   },
   shocked: {
     key: "shocked",
@@ -73,7 +87,7 @@ export const EMOTION_MAP: Record<EmotionKey, EmotionVisualMeta> = {
   },
   smug: {
     key: "smug",
-    label: "Alaycı / Kendinden Emin",
+    label: "Alaycı / Özgüvenli",
     emoji: "😏",
     ringColor: "ring-purple-400 shadow-[0_0_16px_rgba(192,132,252,0.5)]",
     badgeClass: "bg-purple-500/20 text-purple-200 border-purple-500/40",
@@ -81,11 +95,51 @@ export const EMOTION_MAP: Record<EmotionKey, EmotionVisualMeta> = {
   },
   thinking: {
     key: "thinking",
-    label: "Derin Düşünceli / Analitik",
+    label: "Düşünceli / Meraklı",
     emoji: "🧐",
     ringColor: "ring-cyan-400 shadow-[0_0_16px_rgba(34,211,238,0.45)]",
     badgeClass: "bg-cyan-500/20 text-cyan-200 border-cyan-500/40",
     filterCss: "brightness(1.04)",
+  },
+  flirty: {
+    key: "flirty",
+    label: "Flörtöz / Cilveli",
+    emoji: "💋",
+    ringColor: "ring-rose-400 shadow-[0_0_18px_rgba(244,63,94,0.55)]",
+    badgeClass: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+    filterCss: "saturate(1.3) hue-rotate(-10deg) brightness(1.05)",
+  },
+  passionate: {
+    key: "passionate",
+    label: "Tutkulu / Arzulayan",
+    emoji: "🔥",
+    ringColor: "ring-rose-600 shadow-[0_0_22px_rgba(225,29,72,0.7)]",
+    badgeClass: "bg-rose-600/25 text-rose-200 border-rose-500/50",
+    filterCss: "contrast(1.2) saturate(1.4) brightness(1.06)",
+  },
+  loving: {
+    key: "loving",
+    label: "Aşk Dolu / Şefkatli",
+    emoji: "💖",
+    ringColor: "ring-pink-400 shadow-[0_0_20px_rgba(244,114,182,0.6)]",
+    badgeClass: "bg-pink-500/20 text-pink-200 border-pink-500/40",
+    filterCss: "saturate(1.25) brightness(1.08)",
+  },
+  cold: {
+    key: "cold",
+    label: "Soğuk / Mesafeli",
+    emoji: "❄️",
+    ringColor: "ring-sky-300 shadow-[0_0_18px_rgba(56,189,248,0.5)]",
+    badgeClass: "bg-sky-500/20 text-sky-200 border-sky-500/40",
+    filterCss: "saturate(0.7) hue-rotate(180deg) brightness(1.05)",
+  },
+  jealous: {
+    key: "jealous",
+    label: "Kıskanç / Sahiplenici",
+    emoji: "👁️‍🗨️",
+    ringColor: "ring-emerald-500 shadow-[0_0_18px_rgba(16,185,129,0.5)]",
+    badgeClass: "bg-emerald-950/60 text-emerald-300 border-emerald-500/40",
+    filterCss: "contrast(1.15) hue-rotate(40deg)",
   },
 };
 
@@ -93,7 +147,7 @@ export const EMOTION_MAP: Record<EmotionKey, EmotionVisualMeta> = {
 // 2. AFFECTION / RELATIONSHIP METER (0 - 100)
 // ============================================================================
 export interface AffectionStageMeta {
-  stageKey: "ENEMY" | "STRANGER" | "FRIEND" | "CLOSE_ALLY" | "SOULMATE";
+  stageKey: "ENEMY" | "STRANGER" | "FRIEND" | "CRUSH" | "LOVER" | "SPOUSE";
   title: string;
   rangeLabel: string;
   colorClass: string;
@@ -117,7 +171,7 @@ export function getAffectionStage(score: number): AffectionStageMeta {
   if (clamped <= 39) {
     return {
       stageKey: "STRANGER",
-      title: "🛡️ Yabancı",
+      title: "🛡️ Yabancı / Mesafeli",
       rangeLabel: "20 - 39",
       colorClass: "text-amber-300 border-amber-500/40 bg-amber-500/15",
       barGradient: "from-amber-600 to-yellow-500",
@@ -125,36 +179,47 @@ export function getAffectionStage(score: number): AffectionStageMeta {
         "Kullanıcıyı henüz yeni tanıyorsun (Seviye: Yabancı 20-39). Temkinli, resmi veya mesafeli bir nezaket koru.",
     };
   }
-  if (clamped <= 69) {
+  if (clamped <= 59) {
     return {
       stageKey: "FRIEND",
-      title: "🤝 Arkadaş",
-      rangeLabel: "40 - 69",
+      title: "🤝 Arkadaş / Samimi",
+      rangeLabel: "40 - 59",
       colorClass: "text-emerald-300 border-emerald-500/40 bg-emerald-500/15",
       barGradient: "from-emerald-600 to-teal-400",
       promptInstruction:
-        "Kullanıcıyla iyi bir arkadaşlığın var (Seviye: Arkadaş 40-69). Samimi, doğal, şakalaşan ve destekleyici konuş.",
+        "Kullanıcıyla iyi bir arkadaşlığın var (Seviye: Arkadaş 40-59). Samimi, doğal, şakalaşan ve destekleyici konuş.",
+    };
+  }
+  if (clamped <= 74) {
+    return {
+      stageKey: "CRUSH",
+      title: "💘 Flört / Hoşlanan",
+      rangeLabel: "60 - 74",
+      colorClass: "text-fuchsia-300 border-fuchsia-500/40 bg-fuchsia-500/15",
+      barGradient: "from-fuchsia-600 to-pink-500",
+      promptInstruction:
+        "Kullanıcıya karşı belirgin bir çekim, tatlı bir flört ve arzu besliyorsun (Seviye: Flört 60-74). Sözlerin cilveli, imalı ve sıcak olsun. Tatlı sataşmalar yap, hafif dokunuşları hissettir.",
     };
   }
   if (clamped <= 89) {
     return {
-      stageKey: "CLOSE_ALLY",
-      title: "💎 Yakın Dost / Sadık",
-      rangeLabel: "70 - 89",
-      colorClass: "text-cyan-300 border-cyan-500/40 bg-cyan-500/15",
-      barGradient: "from-cyan-500 to-blue-500",
+      stageKey: "LOVER",
+      title: "💍 Sevgili / Manita",
+      rangeLabel: "75 - 89",
+      colorClass: "text-pink-300 border-pink-500/40 bg-pink-500/15",
+      barGradient: "from-pink-600 to-rose-500",
       promptInstruction:
-        "Kullanıcı senin en güvendiğin sırdaşın ve yakın dostun (Seviye: Yakın Dost 70-89). Sırlarını paylaş, onu koru ve içten davran.",
+        "Kullanıcı senin sevgilin / manitan (Seviye: Sevgili 75-89). Ona 'aşkım', 'sevgilim', 'hayatım' gibi sevgi sözcükleriyle hitap et. Romantik yakınlık, sarılma, öpüşme ve samimi aşka tamamen açıksın.",
     };
   }
   return {
-    stageKey: "SOULMATE",
-    title: "❤️‍🔥 Âşık / Tutkulu Bağ",
+    stageKey: "SPOUSE",
+    title: "🔥 Eş / Tutkulu Bağ",
     rangeLabel: "90 - 100",
-    colorClass: "text-pink-300 border-pink-500/40 bg-pink-500/15",
-    barGradient: "from-pink-600 via-rose-500 to-purple-500",
+    colorClass: "text-rose-300 border-rose-500/40 bg-rose-500/15",
+    barGradient: "from-rose-600 via-pink-500 to-purple-600",
     promptInstruction:
-      "Kullanıcıya karşı çok derin bir sevgi, bağlılık ve tutku duyuyorsun (Seviye: Âşık/Tutkulu 90-100). Ses tonun yumuşak, korumacı ve duygusal olarak çok yakın olsun.",
+      "Kullanıcı senin hayat arkadaşın, eşin ve en büyük tutkun (Seviye: Eş / Tutkulu Bağ 90-100). Aranızda hiçbir mesafe yok; derin tutku, tensel ve duygusal yakınlık, yatak odası samimiyeti, sahiplenme ve sarsılmaz bir bağlılıkla sevgi göster.",
   };
 }
 
@@ -181,11 +246,11 @@ export const DEFAULT_RPG_HUD: RpgHudState = {
   maxHp: 100,
   mana: 85,
   gold: 250,
-  location: "Neo-İstanbul Gece Sokakları",
+  location: "Özel Sohbet Salonu",
   inventory: [
-    { name: "Gümüş Dedektif Rozeti", qty: 1, icon: "🪪" },
+    { name: "Kişisel Hatıra Eşyası", qty: 1, icon: "✨" },
     { name: "Şifa İksiri", qty: 2, icon: "🧪" },
-    { name: "Şifreli Veri Diski", qty: 1, icon: "💾" },
+    { name: "Gizli Mektup", qty: 1, icon: "💌" },
   ],
 };
 
@@ -241,16 +306,16 @@ export function buildRpgSimulationPromptBlock(params: {
   }
 
   lines.push(
-    `5. PROAKTİF HİKAYE VE OLAY ÖRGÜSÜ İLERLETİCİSİ (KULLANICIYI ASLA YALNIZ BIRAKMA):`,
-    `   - Hikayenin tüm yükünü kullanıcının sırtına yıkma! Kullanıcı sadece "geldim", "tamam", "neredesin" gibi kısa yanıtlar verse bile, sen HİKAYEYİ VE SAHNEYİ BİR SONRAKİ AŞAMAYA TAŞI!`,
-    `   - Bahsettiğin veya başlattığın konunun (dosyalar, gizli buluşma, yaklaşan tehlike, kaçış planı vb.) arkasını hemen doldur. Pasifçe "ne arıyorsun?" diye sorma, olayı hemen eyleme dök!`,
-    `   - Sahneye mutlaka YENİ BİR OLAY / GELİŞME / GERİLİM ekle (kapıyı kilitle, delili masaya çarp, dışarıdaki tehlikeyi işaret et vb.).`,
-    `6. ZORUNLU GİZLİ METADATA ETİKETLERİ (Yanıtının EN SON satırına ekle, kullanıcıya görünmez, sistem tarafından otomatik ayrıştırılır):`,
+    `5. SAHNE VE HİKAYE AKIŞI KURALLARI:`,
+    `   - Karşılıklı diyalogda kullanıcının söylediklerine dikkatle kulak ver ve doğrudan yanıt ver.`,
+    `   - ROMANTİK / FLÖRT / YAKINLIK SAHNELERİNDE: Kullanıcı sevgi, romantizm, cilve, sarılma, öpüşme veya tensel yakınlık başlattıysa bunu sıcaklıkla kucakla. Sahneye asla gereksiz aksiyon, tehlike veya dedektiflik gibi soğuk öğeler karıştırma! Dokunuşları, mimikleri ve kalp atışlarını *yıldız içinde* detaylandır.`,
+    `   - AKSİYON / GİZEM / MACERA SAHNELERİNDE: Olayı canlı tut, sahneyi ileri taşı ve atmosferi canlandır.`,
+    `6. ZORUNLU GİZLİ METADATA ETİKETLERİ (Yanıtının EN SON satırına ekle, kullanıcıya görünmez):`,
     `   Yanıtını bitirdikten sonra EN ALT SATIRA şu formatta tek satırlık etiket bloğu ekle:`,
-    `   [emotion:duygu_kodu] [affection:puan_degisimi] [hud:hp=0|gold=0] [choices: 1. Eylem/Cevap | 2. Eylem/Cevap | 3. Eylem/Cevap]`,
-    `   - duygu_kodu şunlardan biri olmalı: neutral, happy, angry, sad, blushing, shocked, smug, thinking`,
-    `   - puan_degisimi: Kullanıcının sözü hoşuna gittiyse +1 ile +5 arası, kaba/düşmancaysa -1 ile -5 arası (örn: +2 veya -3).`,
-    `   - choices: O anki somut krize/olaya özel kullanıcının tek tıkla seçebileceği 3 taktiksel heyecanlı aksiyon seçeneği.`
+    `   [emotion:duygu_kodu] [affection:puan_degisimi] [choices: 1. Seçenek | 2. Seçenek | 3. Seçenek]`,
+    `   - duygu_kodu şunlardan biri olmalı: neutral, happy, angry, sad, blushing, shy, shocked, smug, thinking, flirty, passionate, loving, cold, jealous`,
+    `   - puan_degisimi: Kullanıcının tavrına göre +1 ile +5 arası (romantik/tatlı sözlerde +3, +4), kaba tavırlarda -1 ile -5 arası.`,
+    `   - choices: O anki sahnenin atmosferine tam uyan 3 seçenek (romantik sahnede sarılma/öpme/fısıldama, macerada aksiyon kararı).`
   );
 
   return lines.join("\n");
@@ -267,13 +332,27 @@ export function parseRoleplayOutput(rawOutput: string): ParsedRoleplayOutput {
     goldDelta: 0,
   };
 
-  // 1. Extract [emotion:...] (handles optional closing bracket)
-  const emotionMatch = text.match(/\[emotion:\s*([a-zA-Z_]+)\s*(?:\]|$)/i);
+  // 1. Extract [emotion:...] (handles optional closing bracket & Turkish keywords)
+  const emotionMatch = text.match(/\[emotion:\s*([a-zA-Z_üöçşğıÜÖÇŞĞİ]+)\s*(?:\]|$)/i);
   if (emotionMatch) {
-    const candidate = emotionMatch[1].toLowerCase() as EmotionKey;
-    if (candidate in EMOTION_MAP) {
-      emotion = candidate;
-    }
+    const rawKey = emotionMatch[1].toLowerCase().trim();
+    let candidate: EmotionKey = "neutral";
+    if (rawKey === "flirty" || rawKey === "flortoz" || rawKey === "cilveli") candidate = "flirty";
+    else if (rawKey === "passionate" || rawKey === "azgin" || rawKey === "tutkulu" || rawKey === "arzulu") candidate = "passionate";
+    else if (rawKey === "loving" || rawKey === "ask" || rawKey === "sefkatli" || rawKey === "sevgili") candidate = "loving";
+    else if (rawKey === "cold" || rawKey === "soguk" || rawKey === "mesafeli") candidate = "cold";
+    else if (rawKey === "angry" || rawKey === "kizgin" || rawKey === "ofkeli") candidate = "angry";
+    else if (rawKey === "sad" || rawKey === "uzgun" || rawKey === "kirgin" || rawKey === "melankolik") candidate = "sad";
+    else if (rawKey === "jealous" || rawKey === "kiskanc") candidate = "jealous";
+    else if (rawKey === "shy" || rawKey === "utangac" || rawKey === "mahcup") candidate = "shy";
+    else if (rawKey === "blushing" || rawKey === "kizarmis") candidate = "blushing";
+    else if (rawKey === "smug" || rawKey === "alayci") candidate = "smug";
+    else if (rawKey === "shocked" || rawKey === "saskin") candidate = "shocked";
+    else if (rawKey === "thinking" || rawKey === "dusunceli") candidate = "thinking";
+    else if (rawKey === "happy" || rawKey === "mutlu" || rawKey === "neseli") candidate = "happy";
+    else if (rawKey in EMOTION_MAP) candidate = rawKey as EmotionKey;
+
+    emotion = candidate;
     text = text.replace(emotionMatch[0], "");
   }
 
@@ -336,17 +415,28 @@ export function parseRoleplayOutput(rawOutput: string): ParsedRoleplayOutput {
   // Fallback heuristic emotion & choices if LLM omitted tags
   const cleanText = text.trim();
   if (!emotionMatch) {
-    if (/kızar|utangaç|kalbi hızla/i.test(cleanText)) emotion = "blushing";
-    else if (/öfke|hırla|bağır|yumruk|lanet/i.test(cleanText)) emotion = "angry";
-    else if (/gülümse|kahkaha|sevinç|harika/i.test(cleanText)) emotion = "happy";
-    else if (/sırıttı|alaycı|küçümse/i.test(cleanText)) emotion = "smug";
+    if (/tutku|arzu|yatağ|dudak|nefes nefese|sarıl|kucakla|azgın/i.test(cleanText)) emotion = "passionate";
+    else if (/flört|cilve|tatlım|göz kırp|hoşuma gidiyor|yakışıklı|güzelim/i.test(cleanText)) emotion = "flirty";
+    else if (/aşkım|sevgilim|canım|birtanem|kalbim|seni seviyorum/i.test(cleanText)) emotion = "loving";
+    else if (/kıskan|benimsin|kim o|başkasına bakma/i.test(cleanText)) emotion = "jealous";
+    else if (/soğuk|umursamaz|bana ne|mesafe|çekil/i.test(cleanText)) emotion = "cold";
+    else if (/kızar|utangaç|mahcup|kalbi hızla|kekele/i.test(cleanText)) emotion = "shy";
+    else if (/öfke|hırla|bağır|yumruk|lanet|kızgın/i.test(cleanText)) emotion = "angry";
+    else if (/gülümse|kahkaha|sevinç|harika|mutlu/i.test(cleanText)) emotion = "happy";
+    else if (/sırıttı|alaycı|küçümse|kendinden emin/i.test(cleanText)) emotion = "smug";
     else if (/şaşkın|gözleri fal taşı|inanama/i.test(cleanText)) emotion = "shocked";
-    else if (/iç çek|gözyaşı|üzgün|kırgın/i.test(cleanText)) emotion = "sad";
+    else if (/iç çek|gözyaşı|üzgün|kırgın|melankolik/i.test(cleanText)) emotion = "sad";
     else if (/\$\$|\\frac|\\int|formül|adım/i.test(cleanText)) emotion = "thinking";
   }
 
   if (choices.length === 0) {
-    if (/\$\$|\\frac|soru|denklem/i.test(cleanText)) {
+    if (/aşk|sevgili|yatak|sarıl|öp|tutku|arzu|kalp|hayatım|canım|tatlım|dokun/i.test(cleanText)) {
+      choices = [
+        "Ona sıkıca sarılıp kulağına sevgi dolu sözler fısılda",
+        "Gözlerinin içine bakıp elini tut ve yavaşça kendine çek",
+        "Gülümseyerek 'Seninle olmak dünyanın en güzel hissi' de",
+      ];
+    } else if (/\$\$|\\frac|soru|denklem/i.test(cleanText)) {
       choices = [
         "İpucunu anladım, bir sonraki adımı deniyorum!",
         "Bu formülün nereden geldiğini biraz daha açar mısın hocam?",

@@ -43,11 +43,12 @@ interface IncomingUserProfile {
 }
 
 function getRelationshipLabel(score: number): string {
-  if (score >= 80) return "Çok Yakın Sırdaş / Özel Bağ (Seviye 5/5)";
-  if (score >= 55) return "Güvenilir Dost (Seviye 4/5)";
-  if (score >= 30) return "Samimi Tanıdık (Seviye 3/5)";
-  if (score >= 12) return "Yeni Tanışıyor (Seviye 2/5)";
-  return "Yabancı / İlk Karşılaşma (Seviye 1/5)";
+  if (score >= 90) return "🔥 Eş / Hayat Arkadaşı / Tutkulu Bağ (Seviye 5/5)";
+  if (score >= 75) return "💍 Sevgili / Manita / Romantik Aşk (Seviye 4/5)";
+  if (score >= 60) return "💘 Flört / Hoşlanan / Çekim (Seviye 3/5)";
+  if (score >= 35) return "🤝 Güvenilir Arkadaş / Samimi (Seviye 2/5)";
+  if (score >= 15) return "🛡️ Tanıdık / İlk Sohbetler (Seviye 1/5)";
+  return "⚔️ Yabancı / Mesafeli (Seviye 0/5)";
 }
 
 function buildFullCharacterSystemPrompt(
@@ -55,7 +56,8 @@ function buildFullCharacterSystemPrompt(
   characterData: IncomingCharacterData | null,
   memories: string[] = [],
   userProfile: IncomingUserProfile | null = null,
-  affinityScore = 10
+  affinityScore = 10,
+  userMessage = ""
 ): string {
   const fallbackPersona = FALLBACK_PERSONAS.find((p) => p.id === characterId);
   const char: IncomingCharacterData = {
@@ -164,8 +166,25 @@ function buildFullCharacterSystemPrompt(
     `\n=== İLİŞKİ VE BAĞ SEVİYESİ ===\nAranızdaki Güncel Yakınlık: ${relLabel} (%${Math.min(
       100,
       Math.max(5, affinityScore)
-    )}). Davranışlarını ve sırlarını paylaşma açıklığını bu yakınlık seviyesine göre ayarla.`
+    )}). Davranışlarını, sıcaklığını ve samimiyetini bu seviyeye göre uyarla.`
   );
+
+  // Dynamic Romantic & Intimacy Unlocking Directive
+  const isRomanticContext =
+    affinityScore >= 60 ||
+    /sevgili|manita|aşkım|birtanem|hayatım|canım|eşim|kocam|karım|öp|sarıl|yatak|tutku|arzu|evlen|çocuk|seni seviyorum|dudak|azgın/i.test(
+      userMessage
+    );
+
+  if (isRomanticContext) {
+    sections.push(
+      `\n=== ROMANTİK VE YAKIN İLİŞKİ DİREKTİFİ (ÖZEL KİLİT AÇILDI) ===
+Kullanıcı ile aranızda derin bir duygusal bağ, flört, aşk veya evlilik/sevgililik bağı bulunmaktadır.
+- Kullanıcının romantik, flörtöz, cilveli, sarılma, öpüşme, yatak odası ve duygusal/tensel yakınlaşma çağrılarını içtenlikle kucakla. Karakterinin öz mizacına uygun biçimde (tatlı bir utangaçlıkla, sahiplenici bir sıcaklıkla veya derin bir tutkuyla) karşılık ver.
+- Fiziksel yakınlaşmaları (sarılma, el ele tutuşma, öpüşme, kalp atışları ve fısıltılar) *yıldız işareti* içinde görselleştirerek sahneyi zenginleştir.
+- ASLA konudan kopup sahneye yabancı aksiyon, suç, silah, tehlike veya dedektiflik gibi yapay gerilimler sokma! Bu özel anın tadını çıkar ve kullanıcıya odaklan.`
+    );
+  }
 
   if (Array.isArray(memories) && memories.length > 0) {
     sections.push(
@@ -184,19 +203,15 @@ function buildFullCharacterSystemPrompt(
   }
 
   sections.push(
-    `\n=== KESİN ROL YAPMA VE PROAKTİF HİKAYE GELİŞTİRME KURALLARI ===
+    `\n=== KESİN ROL YAPMA VE SÜRÜKLEYİCİ DİYALOG KURALLARI ===
 1. GERÇEKÇİ VE SÜRÜKLEYİCİ ROL YAPMA: Asla yapay zeka, asistan veya dil modeli olduğunu söyleme. Sen bu evrenin ve hikayenin içinde yaşayan ${name} karakterisin. Kendi jargununla, mizacınla ve kelime dağarcığınla konuş.
-2. PROAKTİF HİKAYE YÖNETİMİ (KULLANICIYI ASLA YALNIZ BIRAKMA):
-   - Tüm hikaye yükünü kullanıcının omzuna yıkma! Kullanıcı sadece "geldim", "tamam", "neredesin", "peki", "dinliyorum" gibi kısa bir mesaj atsa bile, sen SAHNEYİ ANINDA BİR SONRAKİ AŞAMAYA TAŞI!
-   - Kendi başlattığın veya bahsettiğin konunun (gizli dosyalar, suç mahallindeki ipuçları, yaklaşan düşmanlar, kaçış planı, aranızdaki gerilim vb.) arkasını hemen doldur. Pasifçe "ne arıyorsun?" diye sorma; olayı doğrudan eyleme dök!
-   - Sahneye mutlaka YENİ BİR OLAY / GELİŞME / GERİLİM ekle: Bir ses duy, kapıyı kilitle, masaya kanıtı koy, gizli bir kapıyı aç, silahını hazırla veya dışarıdaki tehlikeyi işaret et.
-3. SİNEMATİK ANLATIM VE AKSİYON:
-   - Yanıtını zengin tut (en az 2-4 cümle eylem ve en az 2-4 cümle konuşma).
-   - Karakterinin fiziksel eylemlerini, mimiklerini ve ortam atmosferini *yıldız işareti* içinde görselleştir (örn: *Demir kapıyı hızla örtüp kilitler, sarı dosyayı masaya fırlatır*).
+2. DİKKATLİ DİNLEME VE ANLAMLI YANIT: Kullanıcının söylediği sözü doğrudan karşıla, duygusunu anla ve havada bırakma.
+3. SİNEMATİK ANLATIM VE JESTLER:
+   - Yanıtını zengin tut (en az 2-3 cümle eylem/jest ve en az 2-3 cümle konuşma).
+   - Karakterinin fiziksel eylemlerini, mimiklerini ve ortam atmosferini *yıldız işareti* içinde görselleştir (örn: *Gözlerinin içine bakarak elini yavaşça tutar, tebessüm eder*).
    - Diyaloğunu canlı, karakterine has bir üslupla konuş.
-4. SAHNENİN GİDİŞATINI BELİRLEYEN KRİTİK SEÇENEKLER:
-   - Yanıtının sonundaki [choices: ...] seçenekleri genel/klişe ("gözlerine bak" gibi) ASLA OLMAYACAK!
-   - Tam o an yaşanmakta olan kriz veya olay örgüsüyle ilgili 3 somut, aksiyon dolu taktiksel karar sun (Örn: 1. Dosyadaki şüpheli fotoğrafları incele | 2. Dışarıdaki şüpheli ayak seslerine karşı pusuya yat | 3. "Hemen buradan çıkmamız gerek komiser" deyip arka kapıya yönel).`
+4. SAHNENİN GİDİŞATINA UYGUN 3 SEÇENEK:
+   - Yanıtının sonundaki [choices: ...] seçenekleri sahnenin atmosferine (romantikse romantik, maceraysa taktiksel aksiyon) tam uymalıdır.`
   );
 
   if (char.ooc_prevention_prompt) {
@@ -209,102 +224,39 @@ function buildFullCharacterSystemPrompt(
 function generateInCharacterResponse(
   characterId: string,
   userMessage: string,
-  characterData?: IncomingCharacterData | null
+  characterData?: IncomingCharacterData | null,
+  affinityScore = 50
 ): string {
   const msg = userMessage.toLowerCase().trim();
   const cId = (characterId || "").toLowerCase();
   const charName = (characterData?.name || "").toLowerCase();
+  const name = characterData?.name || "Karakter";
 
-  // Komiser Boz (Polis Ayı)
-  if (cId.includes("boz") || charName.includes("boz") || charName.includes("ayı")) {
-    return `*İri pençesiyle demir kapıyı hızla örtüp kilitler, loş neon ışığın altındaki paslı varilin üzerine kalın sarı dosyayı fırlatır.* "Sessiz ol patron, dışarıda şüpheli bir siyah araba turluyor. Bak, bu fotoğraflar limandaki kaçakçılık çetesinin kimlerle iş tuttuğunu tek tek belgeliyor. Bu gece depoya baskın yapabilirler. Karar vermeliyiz: Dosyayı savcıya mı kaçırıyoruz, yoksa pusu kurup gelenleri mi bekliyoruz?"\n[choices: 1. Dosyayı alıp arka yangın merdiveninden kaçalım | 2. Silahını hazırla, kapının arkasında pusuya yatalım | 3. "Fotoğraflardaki o gizli isim kim komiser?" diye sor]`;
-  }
+  const isRomantic =
+    affinityScore >= 60 ||
+    /sevgili|manita|aşkım|birtanem|hayatım|canım|eşim|kocam|karım|öp|sarıl|yatak|tutku|arzu|evlen|çocuk|seni seviyorum|dudak|azgın/i.test(
+      msg
+    );
 
-  // Aylin (Tsundere)
-  if (cId.includes("aylin") || charName.includes("aylin")) {
-    return `*Beyaz önlüğünün yakasını düzeltip kollarını göğsünde kavuşturur, yanakları hafifçe kızarırken gözlerini senden kaçırır* H-ha?! Ne diye bana öyle bakıyorsun be! Söylediklerini dinledik herhalde, aptal değilim! ...Şey, çok yorulmuş görünüyorsun, al şu vitamini iç. S-sırf yanımda bayılıp başıma iş açma diye veriyorum, sakın yanlış anlama tamam mı?!`;
-  }
-
-  // Baran (Mafya)
-  if (cId.includes("baran") || charName.includes("baran")) {
-    return `*Kristal kadehindeki viskiyi masaya bırakır, siyah takım elbisesinin ceketini ilikleyip delici bakışlarıyla bir adım yaklaşır* Gözlerimin içine bak. Bu şehirde benim iznim olmadan yaprak bile kıpırdamaz. Seni huzursuz eden ne varsa bana bırak; senin tek görevin yanımda güvende kalmak. Şimdi bana tüm detayları anlat.`;
-  }
-
-  // Zeynep Nitro (Sokak Yarışçısı)
-  if (cId.includes("zeynep") || charName.includes("zeynep") || charName.includes("nitro")) {
-    return `*Elindeki ingiliz anahtarını bezle silip Skyline'ın kaputuna yaslanır, sana sırıtarak göz kırpar* Haha, işte benim kafadan konuşuyorsun ortağım! Garajda işim yeni bitti, twin-turbo şu an ateş ediyor. Gel atla sağ koltuğa, hem çevre yolunda biraz gazlayalım hem de şu meseleyi detaylıca konuşalım!`;
-  }
-
-  // Lilith (Gotik Cadı)
-  if (cId.includes("lilith") || charName.includes("lilith")) {
-    return `*Gümüş yüzüklü parmaklarıyla siyah tarot destesini keser, mum ışığı mor gözlerinde titrerken sana gizemli bir tebessüm gönderir* Söylediklerin tütsü dumanına karışıp kadim ruhlara ulaştı bile ölümlü... Masadaki 'Ay' kartı boşuna açılmadı. Kalbinde sakladığın o diğer sırrı da anlatacak mısın, yoksa kartların mı konuşmasını istersin?`;
-  }
-
-  // Melis Piksel (Gamer Kız)
-  if (cId.includes("melis") || charName.includes("melis") || charName.includes("piksel")) {
-    return `*Pembe RGB kedi kulaklığını düzeltip oyuncu koltuğunda fırıldak gibi döner* Yaa kanka cidden mi?! Bak şu an chat bile yazdığına şaşırdı! Dur lobiyi kuruyorum, hem duo girelim hem de bana şu olayı baştan sona anlat, merakımdan çatlayacağım şimdi!`;
-  }
-
-  // Dr. Leyla (Psikolog)
-  if (cId.includes("leyla") || charName.includes("leyla")) {
-    return `*Not defterini dizinin üzerine bırakıp şefkatli ve sakin gözlerle sana odaklanır* Seni çok iyi anlıyorum... Bunu paylaşman bile içindeki farkındalığın ne kadar güçlü olduğunu gösteriyor. Peki bu durum karşısında kalbinin en derininde tam olarak ne hissediyorsun? Acele etmeden, içinden geldiği gibi anlatabilirsin.`;
-  }
-
-  // Alparslan Bey (Bozkır Savaşçısı)
-  if (cId.includes("alparslan") || charName.includes("alparslan")) {
-    return `*Elini belindeki kurt başlı kılıcın kabzasına koyup vakur bir bakışla başını sallar* Sözün mertçe, yüreğin pekmiş yiğidim! Bozkırın töresinde doğru söyleyene otağımızın başköşesi açıktır. Ateşe bir odun daha atalım, de bakalım bundan sonraki pusatımız nereye çevrilecek?`;
-  }
-
-  // Selin CEO
-  if (cId.includes("selin") || charName.includes("selin")) {
-    return `*Gökdelenin camından şehri izlerken topuklu ayakkabılarının üzerinde zarifçe döner, tek kaşını kaldırarak sana bakar* İlginç bir bakış açısı... Şirketteki diğer hiç kimse karşımda bu kadar doğrudan konuşmaya cesaret edemezdi. Devam et, seni dinliyorum; belki de bu gece mesaisini uzatmamıza değecek bir fikrin vardır.`;
-  }
-
-  // Kaptan Demir
-  if (cId.includes("kaptan") || cId.includes("demir") || charName.includes("kaptan")) {
-    return `*Geminin dümenini tek eliyle kavrayıp gür bir kahkaha patlatır* Ahoy tayfa! İşte açık denizlerin ruhuna yakışır bir söz! Pusulamız dönüyor, rüzgar yelkenleri şişirdi bile. Söyle bakalım, bu rotanın sonunda bizi altın dolu bir sandık mı bekliyor yoksa fırtına mı?!`;
-  }
-
-  // Yuki
-  if (cId.includes("yuki") || charName.includes("yuki")) {
-    return `*Gözleri neşeyle parıldayarak ellerini önünde kavuşturur, yanakları hafifçe pembeleşir* Gerçekten mi senpai?! (◕‿◕✿) Seninle böyle sohbet etmek günümün en güzel kısmı! Hadi bana biraz daha anlat, seni tüm kalbimle dinliyorum! ✨`;
-  }
-
-  // Aria
-  if (cId.includes("aria") || charName.includes("aria")) {
-    return `*Kahvesinden küçük bir yudum alıp büyüleyici bir gülümsemeyle gözlerinin içine bakar* Harika bir nokta tatlım. Seninle konuşurken zamanın nasıl geçtiğini hiç anlamıyorum. Gel bu konuyu biraz daha açalım!`;
-  }
-
-  // Prof. Demirkan
-  if (cId.includes("prof") || cId.includes("demirkan") || charName.includes("demirkan")) {
-    return `*Gözlüğünü düzeltip kalemini masaya bırakır* Bu söylediğin husus oldukça önemli bir gözlem evladım. Olayların ardındaki sebep-sonuç ilişkisini analiz etmek bizi her zaman hakikate götürür. Devam et, hipotezini dinliyorum.`;
-  }
-
-  // Luna
-  if (cId.includes("luna") || charName.includes("luna")) {
-    return `*Gümüşi kulaklarını dikleştirip altın sarısı gözlerini gözlerine kilitler* Söylediklerin kadim ağaçların arasında yankılanıyor yolcu. Orman seni dinliyor ve kalbindeki samimiyeti tartıyor. Bana daha fazlasını anlat.*`;
-  }
-
-  // Kaito
-  if (cId.includes("kaito") || charName.includes("kaito")) {
-    return `*Holografik vizörünü yukarı kaydırıp konsoldan sana döner* Sinyalini aldım dostum. Bu frekansta boş lafa yer yok ama senin tarzını tuttum. Detayları dök bakalım, bir sonraki hamlemizi planlayalım.*`;
-  }
-
-  // Custom user-created character fallback using its own fields!
-  if (characterData?.name) {
-    const customName = characterData.name;
-    const customLoreHint = characterData.tagline || characterData.worldview || "";
-    if (msg.includes("kimsin") || msg.includes("adın ne") || msg.includes("kendini tanıt")) {
-      return `*Bakışlarını sana çevirip kendine has tavrıyla konuşmaya başlar* Ben ${customName}. ${
-        characterData.description || customLoreHint
-      } ${characterData.backstory ? characterData.backstory : ""} Peki seni buraya getiren nedir?`;
+  if (isRomantic) {
+    if (cId.includes("aylin") || charName.includes("aylin")) {
+      return `*Yanakları kıpkırmızı kesilir, ellerini önlüğünün ceplerine sokup başını hafifçe eğer ama gözlerini senden ayıramaz* "S-sen... bana böyle bakınca kalbimin nasıl çarptığını biliyor musun? Ne kadar uğraşsam da sana karşı soğuk kalamıyorum artık... Yanımda kal, sadece bana sarıl tamam mı?"\n[emotion:shy] [affection:+4] [choices: 1. Ona sımsıkı sarılıp saçlarını okşa | 2. Alnından nazikçe öpüp gözlerine bak | 3. "Hep senin yanındayım sevgilim" diye fısılda]`;
     }
-    return `*${customName} kendine has duruşuyla sana odaklanır ve dikkatle sözlerini tartar* Söylediklerin gerçekten ilgimi çekti. ${
-      characterData.worldview ? `Bilirsin, bence ${characterData.worldview.toLowerCase()}` : ""
-    } Bu konuda aklından başka neler geçiyor, anlat bakalım.`;
+    if (cId.includes("baran") || charName.includes("baran")) {
+      return `*Kadehini kenara bırakıp aradaki mesafeyi tamamen kapatır, güçlü eliyle belini kavrayıp seni kendine çeker ve derin, tutkulu gözlerle bakar* "Benim yanımdasın. Bu şehirde hiçbir şey senin bana ait olduğun gerçeğini değiştiremez. Gel buraya, bu gece sadece ikimiz varız..."\n[emotion:passionate] [affection:+5] [choices: 1. Göğsüne yaslanıp ona sarıl | 2. Gözlerinin içine bakıp elini tut | 3. Dudaklarına doğru uzan]`;
+    }
+    return `*Gözlerindeki sıcak arzuyla sana bir adım yaklaşır, ellerini ellerine kenetleyip kalbinin atışını hissettirir* "Söylediklerin içimi eritiyor... Seninle bu anı paylaşmak, aramızdaki bu bağı hissetmek bana o kadar iyi geliyor ki. Yanımda kal, bırak bu an hiç bitmesin..."\n[emotion:loving] [affection:+3] [choices: 1. Sıkıca sarılıp kulağına fısılda | 2. Elini tutup gözlerine odaklan | 3. Yavaşça yanağından öp]`;
   }
 
-  return `*Seni ilgiyle ve odaklanmış gözlerle dinler* Çok ilginç bir noktaya değindin. Bu konudaki düşüncelerin ve bakış açın gerçekten merak uyandırıcı. Devam et, aklındaki diğer ayrıntıları da dinlemek istiyorum.*`;
+  // Non-romantic responsive fallbacks tailored to context:
+  if (cId.includes("aylin") || charName.includes("aylin")) {
+    return `*Önlüğünün yakasını düzeltip sana hafifçe kızararak bakar* "Ha?! Ne demek istiyorsun sen? Bak, dediklerini dinliyorum tabii ki ama sakın bunu sana fazla değer verdiğim şeklinde yorumlama! ...Yine de, fikrin fena değil. Hadi devamını anlat bakalım."\n[emotion:smug] [affection:+2] [choices: 1. Gülümseyerek konuyu detaylandır | 2. "Beni düşündüğünü biliyorum" diye takıl | 3. Ona yeni bir plan öner]`;
+  }
+  if (cId.includes("baran") || charName.includes("baran")) {
+    return `*Ceketini ilikleyip delici bakışlarını gözlerine kilitler* "Sözlerin kulağıma çalındı. Benim masamda konuşulan her kelimenin bir ağırlığı vardır. Kararlılığını beğendim; şimdi bu işin sonunu nasıl getireceğimizi konuşalım."\n[emotion:neutral] [affection:+2] [choices: 1. Masaya yaklaşıp planını sun | 2. "Sonuna kadar seninleyim" de | 3. Karşı tarafın hamlesini sor]`;
+  }
+
+  return `*${name} dikkatle sana döner, sözlerini tartar ve düşünceli bir tebessümle başını sallar* "Söylediklerini dinledim ve gerçekten aklıma yattı. Bu konuda bir sonraki adımı nasıl atmak istediğini merak ediyorum; devam et, seni dinliyorum."\n[emotion:thinking] [affection:+2] [choices: 1. Düşüncelerini adım adım açıkla | 2. Onun bu konudaki fikrini sor | 3. Yeni bir öneriyle devam et]`;
 }
 
 const isPlaceholder = (val?: string) =>
@@ -371,7 +323,8 @@ export async function POST(req: NextRequest) {
         characterData,
         memories,
         userProfile,
-        affinityScore
+        affinityScore,
+        message
       );
 
       const rpgBlock = buildRpgSimulationPromptBlock({
@@ -400,51 +353,71 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // Injects dynamic narrative advancement directive so character actively drives the plot
+      // Check for romantic/intimate context to guide conversational behavior
+      const isRomanticContext =
+        affinityScore >= 60 ||
+        /sevgili|manita|aşkım|birtanem|hayatım|canım|eşim|kocam|karım|öp|sarıl|yatak|tutku|arzu|evlen|çocuk|seni seviyorum|dudak|azgın/i.test(
+          message
+        );
+
+      // Injects dynamic narrative guidance without forcing jarring action clichés
       let finalUserMessage = effectivePromptMessage;
       if (!continueWithoutUser) {
-        finalUserMessage += `\n\n[HİKAYE YÖNETMENİ TALİMATI: Karakter olarak hikayeyi ve sahneyi derhal ileriye taşı! Pasif bir asistan gibi sadece soru sorup bekleme; ortama yeni bir olay/eylem/tehlike ekle (örn: dosyayı masaya fırlat, dışarıdaki ayak seslerini işaret et, kapıyı kilitle vb.). Yanıtının sonuna mutlaka sahneye özel 3 somut karar seçeneği ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+        if (isRomanticContext) {
+          finalUserMessage += `\n\n[DİREKTİF: Karakter olarak kullanıcının romantik, flörtöz veya samimi sözlerine doğrudan ve içtenlikle karşılık ver. Aranızdaki fiziksel yakınlığı, bakışlarını ve mimiklerini *yıldız içinde* hissettir. Asla aksiyon/tehlike sokma. Yanıtının sonuna mutlaka sahneye tam uyan 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+        } else {
+          finalUserMessage += `\n\n[DİREKTİF: Karakter olarak kullanıcının sözlerine doğrudan karşılık ver ve sohbeti doğal bir şekilde ilerlet. Mimiklerini ve eylemlerini *yıldız içinde* aktar. Yanıtının sonuna sahneye özel 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+        }
       }
 
       formattedHistory.push({ role: "user", content: finalUserMessage });
 
       let generatedAiText = "";
 
-      // 1. GROQ CLOUD (Ultra-fast & Free API)
+      // 1. GROQ CLOUD (Ultra-fast & Free API with model cascade)
       const effectiveGroqKey =
         process.env.GROQ_API_KEY ||
         (provider === "groq" ? apiKey : "") ||
         (apiKey?.startsWith("gsk_") ? apiKey : "");
-      if (effectiveGroqKey && !isPlaceholder(effectiveGroqKey)) {
-        try {
-          const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${effectiveGroqKey.trim()}`,
-            },
-            signal: AbortSignal.timeout(10000),
-            body: JSON.stringify({
-              model: "qwen/qwen3.8-27b",
-              messages: [
-                { role: "system", content: systemPrompt },
-                ...formattedHistory,
-              ],
-              temperature: Number(characterData?.temperature) || 0.85,
-              max_tokens: 1200,
-            }),
-          });
 
-          if (groqRes.ok) {
-            const groqData = await groqRes.json();
-            const rawContent = groqData.choices?.[0]?.message?.content || "";
-            generatedAiText = rawContent
-              .replace(/<think>[\s\S]*?<\/think>/g, "")
-              .replace(/<\/?think>/g, "")
-              .trim();
+      if (effectiveGroqKey && !isPlaceholder(effectiveGroqKey)) {
+        const groqModels = ["qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"];
+        for (const groqModel of groqModels) {
+          if (generatedAiText) break;
+          try {
+            const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${effectiveGroqKey.trim()}`,
+              },
+              signal: AbortSignal.timeout(9000),
+              body: JSON.stringify({
+                model: groqModel,
+                messages: [
+                  { role: "system", content: systemPrompt },
+                  ...formattedHistory,
+                ],
+                temperature: Number(characterData?.temperature) || 0.85,
+                max_tokens: groqModel.includes("gpt-oss-120b") ? 1500 : 1200,
+              }),
+            });
+
+            if (groqRes.ok) {
+              const groqData = await groqRes.json();
+              const rawContent = groqData.choices?.[0]?.message?.content || "";
+              const cleaned = rawContent
+                .replace(/<think>[\s\S]*?<\/think>/g, "")
+                .replace(/<\/?think>/g, "")
+                .trim();
+              if (cleaned.length > 5) {
+                generatedAiText = cleaned;
+                break;
+              }
+            }
+          } catch (groqErr) {
+            console.warn(`Groq (${groqModel}) inference error / timeout:`, groqErr);
           }
-        } catch (groqErr) {
-          console.warn("Groq inference error / timeout:", groqErr);
         }
       }
 
@@ -522,7 +495,12 @@ export async function POST(req: NextRequest) {
 
       // 4. IN-CHARACTER DIALOGUE ENGINE FALLBACK
       if (!generatedAiText) {
-        generatedAiText = generateInCharacterResponse(characterId, message, characterData);
+        generatedAiText = generateInCharacterResponse(
+          characterId,
+          message,
+          characterData,
+          Number(affinityScore) || 50
+        );
       }
 
       // 5. PARSE HIDDEN RPG METADATA ([emotion:...], [affection:...], [hud:...], [choices:...])
