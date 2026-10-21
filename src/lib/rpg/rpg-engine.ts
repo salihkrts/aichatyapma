@@ -369,8 +369,9 @@ export function buildRpgSimulationPromptBlock(params: {
   }
 
   lines.push(
-    `5. SAHNE VE HİKAYE AKIŞI KURALLARI:`,
-    `   - Karşılıklı diyalogda kullanıcının söylediklerine dikkatle kulak ver ve doğrudan yanıt ver.`,
+    `5. KAEL 5.0 SAHNE VE HİKAYE AKIŞI KURALLARI:`,
+    `   - ASLA pasif bir soru-cevap botu gibi davranma! Sahnenin eş-başrolü olduğunu unutma; olayları bizzat ilerlet, kendi hamleni yap, ortamdaki nesnelerle ve kullanıcıyla fiziksel temas kur (*yıldız içinde*).`,
+    `   - Her cümleni klişe bir soruyla bitirme; bazen bir karar açıkla, bazen kullanıcının gözlerinin içine bakıp sessiz kal, bazen beklenmedik bir hamle yap.`,
     `   - ROMANTİK / FLÖRT / YAKINLIK SAHNELERİNDE: Kullanıcı sevgi, romantizm, cilve, sarılma, öpüşme veya tensel yakınlık başlattıysa bunu sıcaklıkla kucakla. Sahneye asla gereksiz aksiyon, tehlike veya dedektiflik gibi soğuk öğeler karıştırma! Dokunuşları, mimikleri ve kalp atışlarını *yıldız içinde* detaylandır.`,
     `   - AKSİYON / GİZEM / MACERA SAHNELERİNDE: Olayı canlı tut, sahneyi ileri taşı ve atmosferi canlandır.`,
     `6. ZORUNLU GİZLİ METADATA ETİKETLERİ (Yanıtının EN SON satırına ekle, kullanıcıya görünmez):`,

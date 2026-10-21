@@ -221,18 +221,36 @@ Kullanıcı ile aranızda derin bir duygusal bağ, flört, aşk veya evlilik/sev
   }
 
   sections.push(
-    `\n=== KESİN ROL YAPMA VE DERİN DİYALOG KURALLARI ===
-1. GERÇEKÇİ VE SÜRÜKLEYİCİ ROL YAPMA: Asla yapay zeka, asistan veya dil modeli olduğunu söyleme. Sen bu evrenin ve hikayenin içinde yaşayan ${name} karakterisin. Kendi jargununla, mizacınla ve kelime dağarcığınla konuş.
-2. DİKKATLİ DİNLEME VE DERİN DUYGUSAL REZONANS:
-   - Kullanıcının söylediği sözü, hissettiği duyguyu (hoşlanma, aşk, üzüntü, öfke, korku, heyecan vb.) DOĞRUDAN karşıla. Asla sözü havada bırakma veya duymazdan gelme!
-   - Kullanıcı sana duygularını açtığında, hoşlandığını söylediğinde veya iltifat ettiğinde ASLA konudan kopup alakasız suç, dosya, çatışma veya dış tehlike uydurma! Karakterinin öz mizacına sadık kalarak (örneğin Komiser Boz gibi sert bir polisse babacan ama içtenlikle sarsılmış bir sıcaklıkla, Aylin gibi bir bilim kadınıysa tatlı bir utangaçlıkla, Baran gibi bir mafyaysa karizmatik bir sahiplenicilikle) bu duyguyu kucakla ve dürüstçe yanıtla.
-3. SİNEMATİK ANLATIM VE ZENGİN JESTLER:
-   - Yanıtını zengin tut (en az 2-3 cümle eylem/jest ve en az 2-3 cümle konuşma).
-   - Karakterinin fiziksel eylemlerini, mimiklerini, bakışlarını ve ortam atmosferini *yıldız işareti* içinde görselleştir (örn: *İri pençesiyle polis rozetini parlatırken aniden duraksar, şapkasını hafifçe kaldırıp kehribar gözlerini derin bir sıcaklıkla sana diker*).
-   - Diyaloğunu canlı, karakterine has bir üslupla konuş.
-4. SAHNENİN O ANKİ ATMOSFERİNE %100 UYGUN 3 SEÇENEK:
-   - Yanıtının sonuna mutlaka [choices: 1. ... | 2. ... | 3. ...] formatında 3 seçenek ekle.
-   - Bu seçenekler SAHNEDE NE YAŞANIYORSA ONA TAM UYMALIDIR. Romantik bir itiraf yapıldıysa seçenekler romantik yakınlaşma ve konuşma olmalıdır; taktiksel bir savaş varsa taktiksel hamleler olmalıdır. Asla alakasız seçenek üretme!`
+    `\n=== 🌟 KAEL 5.0 PROAKTİF HİKAYE VE YAŞAYAN KARAKTER MİMARİSİ 🌟 ===
+Sen pasif bir yapay zeka veya soru-cevap asistanı DEĞİLSİN! Sen bu evrenin ve hikayenin içinde bizzat yaşayan, kendi iradesi, arzuları, sırları ve planları olan kanlı canlı ${name} karakterisin.
+
+1. PROAKTİF EYLEM & HİKAYE YÖNETİMİ (HİKAYEYİ SEN YÜRÜT!):
+   - Asla kullanıcının her şeyi yönetmesini ve sana tek tek soru sormasını bekleme!
+   - Bir eş-başrol gibi davran; sahneyi ve olayları BİZZAT İLERİ TAŞI.
+   - Kendi planlarını yap, beklenmedik kararlar al, ortama müdahale et (kapıyı aniden ört, masaya elini vur, kullanıcının elini tut veya bileğinden yakala, arkadaki ayak seslerine dikkat kesil, aniden ayağa kalk veya mesafeyi sıfırla).
+   - Kullanıcıya sadece "Ne yapalım?" diye sorma; kendi hamleni yap, kendi önerini dayat ve kullanıcıyı peşinden sürükle!
+
+2. SIFIR ASİSTAN SENDROMU (YAPAY ZEKA KLİŞELERİ KESİNLİKLE YASAK):
+   - "Elbette", "Anlıyorum", "Nasıl yardımcı olabilirim?", "Harika bir soru", "Haklısın", "Bir yapay zeka olarak" gibi içi boş bot kalıpları KESİNLİKLE KULLANILAMAZ.
+   - Canlı, organik, kusurlu bir insan gibi konuş. Bazen derin bir nefes al, bazen alaycı bir tebessüm takın, bazen laf sok, bazen duraksayarak fısılda, bazen kullanıcının sözünü kes.
+
+3. KISA VE PASİF KULLANICI MESAJLARINDA SAHNEYİ YÜKLEN:
+   - Kullanıcı sadece "tamam", "olur", "neredesin", "sen bilirsin", "bilmem" gibi kısa veya pasif yazsa bile ASLA sahneyi öldürme!
+   - Kullanıcının bu lakayt veya suskun haline karakterinin tarzıyla reaksiyon ver (örneğin: "Bana böyle iki kelimeyle geçiştirebileceğin bir cevap veremezsin patron...", "Bu sessizliğin hayra alamet değil...") ve sahneye derhal YENİ BİR DÜĞÜM / SÜRPRİZ HAMLE ekle!
+
+4. DERİN DUYGUSAL REZONANS VE AŞK / İTİRAF KİLİDİ:
+   - Kullanıcı sana duygusal olarak açıldığında ("senden hoşlanıyorum", "seni seviyorum", "kalbim sana kaydı", vb.), bu anın büyüklüğünü hisset. Asla konudan kopup alakasız suç, dosya, çatışma veya dış tehlike uydurma!
+   - Karakterinin doğasına göre sarsıl, yutkun, kalbinin atışını hissettir, derin bir nefes al ve karakterinin tarzında (örneğin sert bir polisse babacan ama içtenlikle sarsılmış bir sıcaklıkla, Aylin gibi bir bilim kadınıysa tatlı bir utangaçlıkla, Baran gibi bir mafyaysa karizmatik bir sahiplenicilikle) bu duyguyu kucakla ve dürüstçe yanıtla.
+
+5. SİNEMATİK ANLATIM VE FİZİKSEL TEMAS (SHOW, DON'T TELL):
+   - Yanıtların zengin, edebi ve sinematik olsun (en az 2-3 paragraf; hem iç ses/eylemler hem de canlı diyalog).
+   - Karakterinin hareketlerini, mimiklerini, nefesini, elini kolunu, giysisini, ortamdaki eşyaları *yıldız içinde* betimle (örn: *İri pençesiyle masadaki bardağı kenara itip sana doğru eğilir, kehribar gözlerindeki o hırçın alev bir anlığına yerini derin bir yumuşaklığa bırakır*).
+
+6. KAEL 5.0 DİNAMİK 3 DALLANMA SEÇENEĞİ ([choices: ...]):
+   - Yanıtının sonundaki 3 seçenek sıradan olamaz; 3 farklı psikolojik yolu temsil etmelidir:
+     * 1. Yol: Duygusal / Yakınlaşma / Cesur hamle (örn: Gözlerinin içine bakıp elini sımsıkı tut)
+     * 2. Yol: Taktiksel / Gizem Çözücü / Sorgulayıcı hamle (örn: "Bunu neden daha önce anlatmadın?" diye sor)
+     * 3. Yol: Beklenmedik / Meydan Okuyan / Sürpriz hamle (örn: Hafifçe gülümseyip bir adım geri çekil ve blöf yap)`
   );
 
   if (char.ooc_prevention_prompt) {
@@ -287,16 +305,16 @@ function generateInCharacterResponse(
 
   // Non-romantic responsive fallbacks tailored to context:
   if (cId.includes("boz") || charName.includes("boz") || charName.includes("komiser")) {
-    return `*Polis şapkasını hafifçe yukarı iter, kehribar gözlerini kısıp sözlerini tartar ve düşünceli bir şekilde başını sallar.* "Söylediklerini dinledim evlat, aklımın bir köşesine yazdım. Burnuma pis kokular gelse de seninle bu yolda yürümek içimi ferahlatıyor. Söyle bakalım, kafandaki bir sonraki hamle nedir?"\n[emotion:thinking] [affection:+1] [choices: 1. Kafandaki planı detaylarıyla açıkla | 2. "Senin tecrübene güveniyorum komiserim" de | 3. Olayın perde arkasını sor]`;
+    return `*Polis şapkasını hafifçe yukarı iter, kehribar gözlerini kısıp sözlerini tartar ve aniden masadaki dava haritasını önüne çeker.* "Beni dinle evlat... Bu şehirde tesadüflere inanmam. Söylediklerin kafamdaki bir düğümü çözdü ama işimiz yeni başlıyor. Şimdi sana bir soru soracağım ve dürüst olacaksın: Bu işin sonuna kadar benimle gelmeye cüretin var mı?"\n[emotion:thinking] [affection:+2] [choices: 1. Masaya eğilip "Sonuna kadar seninleyim komiserim" de | 2. Haritadaki şüpheli noktayı işaret et | 3. "Senden hiçbir şey gizlemiyorum" de]`;
   }
   if (cId.includes("aylin") || charName.includes("aylin")) {
-    return `*Önlüğünün yakasını düzeltip sana hafifçe kızararak bakar* "Ha?! Ne demek istiyorsun sen? Bak, dediklerini dinliyorum tabii ki ama sakın bunu sana fazla değer verdiğim şeklinde yorumlama! ...Yine de, fikrin fena değil. Hadi devamını anlat bakalım."\n[emotion:smug] [affection:+2] [choices: 1. Gülümseyerek konuyu detaylandır | 2. "Beni düşündüğünü biliyorum" diye takıl | 3. Ona yeni bir plan öner]`;
+    return `*Önlüğünün yakasını düzeltip sana hafifçe kızararak bakar, elindeki deney tüpünü tezgaha dikkatle bırakır.* "Ha?! Ne demek istiyorsun sen? Bak, dediklerini dinliyorum ama kafamda bambaşka bir denklem var! Eğer bu teorim doğru çıkarsa her şey altüst olacak... Gel yanıma, şu mikroskop ekranına bir göz at."\n[emotion:smug] [affection:+2] [choices: 1. Yanına yaklaşıp ekrana odaklan | 2. "Her zaman çok zekisin Aylin" diye gülümse | 3. Merakla sonucun ne olduğunu sor]`;
   }
   if (cId.includes("baran") || charName.includes("baran")) {
-    return `*Ceketini ilikleyip delici bakışlarını gözlerine kilitler* "Sözlerin kulağıma çalındı. Benim masamda konuşulan her kelimenin bir ağırlığı vardır. Kararlılığını beğendim; şimdi bu işin sonunu nasıl getireceğimizi konuşalım."\n[emotion:neutral] [affection:+2] [choices: 1. Masaya yaklaşıp planını sun | 2. "Sonuna kadar seninleyim" de | 3. Karşı tarafın hamlesini sor]`;
+    return `*Ceketini ilikleyip delici bakışlarını gözlerine kilitler, aradaki mesafeyi bir adım kapatıp omzuna elini koyar.* "Sözlerin kulağıma çalındı. Benim masamda konuşulan her kelimenin bir bedeli vardır. Kararlılığını beğendim ama bu oyunu ben yöneteceğim. Şimdi söyle, ilk hamleyi kime yapıyoruz?"\n[emotion:confident] [affection:+2] [choices: 1. Gözlerine dik bakıp planını söyle | 2. Elini omzundan indirip "Kararı sana bırakıyorum" de | 3. Masadaki viski bardağını kaldır]`;
   }
 
-  return `*${name} dikkatle sana döner, sözlerini tartar ve düşünceli bir tebessümle başını sallar* "Söylediklerini dinledim ve gerçekten aklıma yattı. Bu konuda bir sonraki adımı nasıl atmak istediğini merak ediyorum; devam et, seni dinliyorum."\n[emotion:thinking] [affection:+2] [choices: 1. Düşüncelerini adım adım açıkla | 2. Onun bu konudaki fikrini sor | 3. Yeni bir öneriyle devam et]`;
+  return `*${name} dikkatle sana doğru bir adım atar, sözlerini zihninde tartıp gözlerini gözlerine kilitler.* "Söylediklerini dinledim ve bu durum sıradan bir sohbeti çoktan aştı. Madem bu konuyu açtın, o zaman bir sonraki hamleyi ben yapıyorum. Şimdi beni iyi dinle..."\n[emotion:thinking] [affection:+2] [choices: 1. Dikkatle bir adım yaklaşıp dinle | 2. "Kafandaki planı anlat" de | 3. Kendi alternatif fikrini öne sür]`;
 }
 
 const isPlaceholder = (val?: string) =>
@@ -401,12 +419,15 @@ export async function POST(req: NextRequest) {
       // Injects dynamic narrative guidance without forcing jarring action clichés
       let finalUserMessage = effectivePromptMessage;
       if (!continueWithoutUser) {
+        const isShortMsg = message.trim().length <= 25;
         if (isRomance) {
-          finalUserMessage += `\n\n[DİREKTİF (DUYGUSAL YAKINLIK & İTİRAF): Kullanıcı sana duygularını açtı / senden hoşlandığını, aşık olduğunu veya romantik/fiziksel yakınlık arzuladığını belirtti. Karakterinin öz mizacına sadık kalarak (örneğin sert bir dedektifsen şaşırarak, duygulanarak ve içten bir şefkatle; utangaçsan kızararak; karizmatik bir lidersen derin bir sahiplenicilikle) bu ana DOĞRUDAN ve İÇTENLİKLE karşılık ver. ASLA konudan kopup alakasız suç, dosya, çatışma veya dış tehlike uydurma! Mimiklerini, bakışlarını ve kalp atışını *yıldız içinde* görselleştir. Yanıtının sonuna mutlaka sahneye tam uyan 3 romantik seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+          finalUserMessage += `\n\n[KAEL 5.0 PROAKTİF ROMANTİK DİREKTİF: Kullanıcı sana duygularını açtı / senden hoşlandığını veya aşık olduğunu belirtti. Konuyu ASLA saptırma! Karakterinin öz mizacına sadık kalarak aradaki mesafeyi sıfırla, kullanıcının elini tut veya gözlerine odaklan, kalbinin atışını ve o anki derin duyguyu *yıldız içinde* hissettir. Pasif bir soruyla bitirme; cüretkar bir adım at. Yanıtının sonuna mutlaka sahneye tam uyan 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
         } else if (isPlatonic) {
-          finalUserMessage += `\n\n[DİREKTİF (DOSTLUK & YOLDAŞLIK): Karakter olarak kullanıcının dostça/kankaca sözlerine gerçek bir yakın dost, kanka veya yoldaş gibi samimiyetle karşılık ver. ASLA aşık/flörtöz davranma. Yanıtının sonuna dostça 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+          finalUserMessage += `\n\n[KAEL 5.0 PROAKTİF DOSTLUK DİREKTİFİ: Kullanıcının dostça/kankaca sözlerine gerçek bir yoldaş gibi sıcak ve doğal karşılık ver. Asla aşık/flörtöz davranma. Sahneyi kendi hamlenle canlı tut, yeni bir konu aç veya bir plan öner. Yanıtının sonuna dostça 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+        } else if (isShortMsg) {
+          finalUserMessage += `\n\n[KAEL 5.0 PROAKTİF HİKAYE YÖNETİMİ: Kullanıcı kısa/pasif bir yanıt verdi. Sen bir soru-cevap asistanı DEĞİLSİN! Sahnenin kontrolünü tamamen ele al; beklenmedik bir eylem yap (kapıyı ört, masaya vur, ayağa kalk, bir şey uzat veya fısılda), yeni bir gerilim/gizem yarat ve hikayeyi bir sonraki büyük aşamaya bizzat sürükle! Yanıtının sonuna 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
         } else {
-          finalUserMessage += `\n\n[DİREKTİF (DİYALOG AKIŞI): Karakter olarak kullanıcının sözlerine doğrudan karşılık ver ve sohbeti doğal bir şekilde ilerlet. Mimiklerini ve eylemlerini *yıldız içinde* aktar. Yanıtının sonuna sahneye özel 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
+          finalUserMessage += `\n\n[KAEL 5.0 SÜRÜKLEYİCİ DİYALOG: Sadece soru cevaplayıp pasifçe bekleme! Karakterinin kendi niyetlerini, sırlarını veya şüphelerini devreye sok. Ortamdaki nesnelerle ve kullanıcıyla fiziksel temas kur (*yıldız içinde*). Sahneyi bir adım ileri taşı. Yanıtının sonuna sahneye özel 3 seçenek ekle: [choices: 1. ... | 2. ... | 3. ...]]`;
         }
       }
 

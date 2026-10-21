@@ -174,6 +174,11 @@ export function ChatHeader({
               {affinity.label} (%{Math.min(100, affinityScore)})
             </Badge>
 
+            <span className="text-[9px] px-2 py-0.5 rounded-full font-bold bg-gradient-to-r from-amber-500/20 via-purple-500/20 to-pink-500/20 border border-amber-500/40 text-amber-200 hidden sm:inline-flex items-center gap-1 shadow-sm">
+              <Sparkles className="size-2.5 text-amber-400 animate-pulse" />
+              Kael 5.0
+            </span>
+
             {isBranched && (
               <Badge
                 variant="outline"
