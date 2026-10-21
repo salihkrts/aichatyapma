@@ -56,6 +56,7 @@ import { QuestsStreakModal } from "@/components/quests/quests-streak-modal";
 import { CharacterLivePing } from "@/components/notifications/character-live-ping";
 import { VisualNovelView } from "@/components/vn/visual-novel-view";
 import { MobileBottomNav } from "@/components/navigation/mobile-bottom-nav";
+import { useAndroidNative } from "@/lib/capacitor/use-android-native";
 import {
   ensureSessionUserInPlatform,
   getSystemConfig,
@@ -114,6 +115,31 @@ function UnifiedAppContent() {
   const [pingSettingsOpen, setPingSettingsOpen] = useState(false);
   const [pendingVoiceCall, setPendingVoiceCall] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
+
+  // Android Yerel Geri Tuşu (Hardware Back Button) & Durum Çubuğu Entegrasyonu
+  const isAnyModalOpen =
+    isRightMenuOpen ||
+    isOnboardingOpen ||
+    isProfileModalOpen ||
+    isBrainModalOpen ||
+    isQuestsModalOpen ||
+    pingSettingsOpen;
+
+  const handleCloseAllModals = useCallback(() => {
+    setIsRightMenuOpen(false);
+    setIsOnboardingOpen(false);
+    setIsProfileModalOpen(false);
+    setIsBrainModalOpen(false);
+    setIsQuestsModalOpen(false);
+    setPingSettingsOpen(false);
+  }, []);
+
+  useAndroidNative({
+    activeTab,
+    onNavigateBack: () => setActiveTab("explore"),
+    isAnyModalOpen,
+    onCloseModals: handleCloseAllModals,
+  });
 
   // Auth / Guest Session & Multi-Persona State
   // Varsayılan: 100 deneme jetonlu Misafir Oturumu (Her yeni ziyaretçi misafir olarak başlar)
