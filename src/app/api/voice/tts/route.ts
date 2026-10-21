@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CHARACTER_VOICES, cleanTextForSpeech } from "@/lib/voice/voices";
+import { EdgeTTS } from "node-edge-tts";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 
 export const maxDuration = 30;
 
@@ -19,74 +23,80 @@ export async function POST(req: NextRequest) {
     const voiceOption =
       CHARACTER_VOICES.find((v) => v.id === voiceId) || CHARACTER_VOICES[0];
 
-    // 1. Birincil Neural Ses Modeli (OpenAI TTS-1 veya Microsoft MAI-Voice-2.1-Flash)
+    // 1. Birincil Neural Ses Modeli: Microsoft Edge TTS (Ultra-Doğal, Gerçekçi Türkçe Erkek & Kadın)
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 9000);
+      const selectedVoice =
+        voiceOption.edgeVoice ||
+        (voiceOption.gender === "male" ? "tr-TR-AhmetNeural" : "tr-TR-EmelNeural");
 
-      const res = await fetch("https://gen.pollinations.ai/v1/audio/speech", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${POLLEN_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: voiceOption.providerModel,
-          input: cleanedText,
-          voice: voiceOption.providerVoice,
-          speed: voiceOption.speed,
-        }),
-        signal: controller.signal,
+      const tmpFile = path.join(
+        os.tmpdir(),
+        `edge_${Date.now()}_${Math.random().toString(36).slice(2)}.mp3`
+      );
+
+      const edgeTts = new EdgeTTS({
+        voice: selectedVoice,
+        lang: "tr-TR",
+        pitch: voiceOption.edgePitch || "default",
+        rate: voiceOption.edgeRate || "default",
+        timeout: 8000,
       });
 
-      clearTimeout(timeout);
+      await edgeTts.ttsPromise(cleanedText, tmpFile);
+      const audioBuffer = await fs.readFile(tmpFile);
+      await fs.unlink(tmpFile).catch(() => {});
 
-      if (res.ok) {
-        const audioBuffer = await res.arrayBuffer();
-        if (audioBuffer.byteLength > 500) {
-          return new NextResponse(audioBuffer, {
-            status: 200,
-            headers: {
-              "Content-Type": "audio/mpeg",
-              "Cache-Control": "no-store",
-            },
-          });
-        }
+      if (audioBuffer && audioBuffer.byteLength > 500) {
+        return new NextResponse(audioBuffer, {
+          status: 200,
+          headers: {
+            "Content-Type": "audio/mpeg",
+            "Cache-Control": "public, max-age=3600",
+          },
+        });
       }
-    } catch {
-      // Fallback'e geç
+    } catch (edgeErr) {
+      console.warn("EdgeTTS error, falling back to secondary:", edgeErr);
     }
 
-    // 2. Yedek: OpenAI TTS-1 ile aynı cinsiyet/karakter tonunda ses üret
-    try {
-      const res2 = await fetch("https://gen.pollinations.ai/v1/audio/speech", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${POLLEN_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "tts-1",
-          input: cleanedText,
-          voice: voiceOption.fallbackOpenAiVoice,
-          speed: voiceOption.speed,
-        }),
-      });
+    // 2. Yedek: Pollinations TTS (eğer kota/anahtar varsa)
+    if (POLLEN_KEY) {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 6000);
 
-      if (res2.ok) {
-        const audioBuffer = await res2.arrayBuffer();
-        if (audioBuffer.byteLength > 500) {
-          return new NextResponse(audioBuffer, {
-            status: 200,
-            headers: {
-              "Content-Type": "audio/mpeg",
-              "Cache-Control": "no-store",
-            },
-          });
+        const res = await fetch("https://gen.pollinations.ai/v1/audio/speech", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${POLLEN_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "tts-1",
+            input: cleanedText,
+            voice: voiceOption.fallbackOpenAiVoice,
+            speed: voiceOption.speed,
+          }),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeout);
+
+        if (res.ok) {
+          const audioBuffer = await res.arrayBuffer();
+          if (audioBuffer.byteLength > 500) {
+            return new NextResponse(audioBuffer, {
+              status: 200,
+              headers: {
+                "Content-Type": "audio/mpeg",
+                "Cache-Control": "public, max-age=3600",
+              },
+            });
+          }
         }
+      } catch {
+        // Fallback to Google
       }
-    } catch {
-      // Son yedek Google TTS'e geç
     }
 
     // 3. Son Yedek: Google Translate Türkçe TTS
