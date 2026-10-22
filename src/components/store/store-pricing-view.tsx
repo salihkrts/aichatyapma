@@ -253,7 +253,7 @@ export function StorePricingView({
     (item) => itemFilter === "all" || item.category === itemFilter
   );
 
-  const customTokenPriceTry = Math.max(15, Math.round((customTokenAmount / 1000) * 24));
+  const customTokenPriceTry = Math.max(39, Math.round((customTokenAmount / 1000) * 49));
 
   return (
     <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
